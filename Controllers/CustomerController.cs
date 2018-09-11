@@ -3,11 +3,11 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Dapper;
 using Microsoft.AspNetCore.Http;
+using System.Data.SqlClient;
 
 namespace BangazonAPI.Models
 {
@@ -57,14 +57,14 @@ namespace BangazonAPI.Models
                 {
                     Dictionary<int, Customer> customerPayments = new Dictionary<int, Customer>();
 
-                    var customers = await conn.QueryAsync<Customer, PaymentType, Customer>(
+                    var customersQuery = await conn.QueryAsync<Customer, PaymentType, Customer>(
                         sql,
                         (customer, paymentType) =>
                         {
                             return customer;
                         }
                     );
-                    return Ok(customers.Values);
+                    return Ok(customersQuery);  // Used to be .Values
 
                 }
                 IEnumerable<Customer> customers = await conn.QueryAsync<Customer>(sql);
@@ -98,7 +98,7 @@ namespace BangazonAPI.Models
             using (IDbConnection conn = Connection)
             {
                 var customerId = (await conn.QueryAsync<int>(sql)).Single();
-                customer.Id = customerId;
+                customer.CustomerId = customerId;
                 return CreatedAtRoute("GetCustomer", new { id = customerId }, customer);
             }
         }

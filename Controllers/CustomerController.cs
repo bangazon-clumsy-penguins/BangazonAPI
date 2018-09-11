@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Dapper;
 using Microsoft.AspNetCore.Http;
+using System.Data.SqlClient;
 
 namespace BangazonAPI.Models
 {
@@ -16,6 +17,10 @@ namespace BangazonAPI.Models
     public class CustomerController : ControllerBase
     {
         private readonly IConfiguration _config;
+
+        public void adam () {
+            return;
+        }
 
         public CustomerController(IConfiguration config)
         {

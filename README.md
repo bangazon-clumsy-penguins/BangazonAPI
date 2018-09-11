@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Building the Bangazon Platform API
 
 Welcome, new Bangazonians!
@@ -38,3 +39,7 @@ If your database needs to be changed in any way, or you wish to add items to be 
 
 Now it's time to build the controllers that handle GET, POST, PUT, and DELETE operations on each resource. Make sure you read, and understand, the requirements in the issue tickets to you can use your ORM and SQL to return the correct data structure to client requests.
 
+=======
+# BangazonAPI
+Repo for first Bangazon sprint
+>>>>>>> 4f1266baf7fbe58ede722502150092a598f82d64

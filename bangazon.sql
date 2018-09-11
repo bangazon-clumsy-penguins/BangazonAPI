@@ -95,5 +95,17 @@ CREATE TABLE Employees (
 CREATE TABLE EmployeeTrainings (
 	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
 	EmployeeId INT NOT NULL,
-	TrainingId INT NOT NULL
+	TrainingId INT NOT NULL,
+	CONSTRAINT FK_Employees FOREIGN KEY(EmployeeId) REFERENCES Employees(Id),
+	CONSTRAINT FK_Trainings FOREIGN KEY(TrainingId) REFERENCES Trainings(Id)
+);
+
+CREATE TABLE EmployeeComputers (
+	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+	AssignmentDate DATE NOT NULL,
+	ReturnDate DATE,
+	EmployeeId INT NOT NULL,
+	ComputerId INT NOT NULL,
+	CONSTRAINT FK_Employees FOREIGN KEY(EmployeeId) REFERENCES Employees(Id),
+	CONSTRAINT FK_Computers FOREIGN KEY(ComputerId) REFERENCES Computers(Id)
 );

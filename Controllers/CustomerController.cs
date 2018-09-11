@@ -17,10 +17,6 @@ namespace BangazonAPI.Models
     {
         private readonly IConfiguration _config;
 
-        public void adam () {
-            return;
-        }
-
         public CustomerController(IConfiguration config)
         {
             _config = config;

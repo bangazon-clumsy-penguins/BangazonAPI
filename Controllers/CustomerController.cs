@@ -75,11 +75,11 @@ namespace BangazonAPI.Models
             }
         }
 
-        // GET /customers/5
+        // GET /Customers/5
         [HttpGet("{id}", Name = "GetCustomer")]
         public async Task<IActionResult> Get([FromRoute]int id)
         {
-            string sql = $"SELECT Id, Name, Language FROM Customer WHERE Id = {id}";
+            string sql = $"SELECT * FROM Customers WHERE Id = {id}";
 
             using (IDbConnection conn = Connection)
             {

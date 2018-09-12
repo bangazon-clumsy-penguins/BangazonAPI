@@ -1,0 +1,12 @@
+
+#
+ On branch ewlusky
+# Changes to be committed:
+#	modified:   BangazonAPI.csproj
+#	modified:   Controllers/CustomerController.cs
+#	new file:   Models/Customer.cs
+#	new file:   Models/Department.cs
+#	new file:   Models/PaymentType.cs
+#	new file:   Models/Product.cs
+#	modified:   appsettings.json
+#

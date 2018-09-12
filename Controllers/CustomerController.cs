@@ -41,10 +41,12 @@ namespace BangazonAPI.Models
 
             if (_include != null && _include.Contains("payments"))
             {
+                
             }
 
             if (_include != null && _include.Contains("products"))
             {
+                sql = "SELECT * FROM Customers JOIN Products ON Products.CustomerId = Customers.Id";
             }
 
             if (q != null)
@@ -64,12 +66,35 @@ namespace BangazonAPI.Models
                         sql,
                         (customer, paymentType) =>
                         {
+
                             return customer;
                         }
                     );
                     return Ok(customersQuery);  // Used to be .Values
 
                 }
+
+                if (_include == "products")
+                {
+                    Dictionary<int, Customer> customerProducts = new Dictionary<int, Customer>();
+
+                    var customersQuery = await conn.QueryAsync<Customer, Product, Customer>(sql, (customer, product) => 
+                    {
+                        Customer thisCustomer;
+                        if (!customerProducts.TryGetValue(customer.Id, out thisCustomer))
+                        {
+                            thisCustomer = customer;
+                            thisCustomer.CustomerProductsList = new List<Product>();
+                            customerProducts.Add(thisCustomer.Id, thisCustomer);
+                        }
+
+                        thisCustomer.CustomerProductsList.Add(product);
+
+                        return thisCustomer;
+                    });
+                    return Ok(customersQuery);
+                }
+
                 IEnumerable<Customer> customers = await conn.QueryAsync<Customer>(sql);
                 return Ok(customers);
             }
@@ -89,22 +114,22 @@ namespace BangazonAPI.Models
         }
 
         // POST /customers
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Customer customer)
-        {
-            string sql = $@"INSERT INTO Customer
-            ()
-            VALUES
-            ();
-            select MAX(Id) from Customer;";
+        //[HttpPost]
+        //public async Task<IActionResult> Post([FromBody] Customer customer)
+        //{
+        //    string sql = $@"INSERT INTO Customer
+        //    ()
+        //    VALUES
+        //    ();
+        //    select MAX(Id) from Customer;";
 
-            using (IDbConnection conn = Connection)
-            {
-                var customerId = (await conn.QueryAsync<int>(sql)).Single();
-                customer.CustomerId = customerId;
-                return CreatedAtRoute("GetCustomer", new { id = customerId }, customer);
-            }
-        }
+        //    using (IDbConnection conn = Connection)
+        //    {
+        //        var customerId = (await conn.QueryAsync<int>(sql)).Single();
+        //        customer.CustomerId = customerId;
+        //        return CreatedAtRoute("GetCustomer", new { id = customerId }, customer);
+        //    }
+        //}
 
         /*
             PUT /customers/5

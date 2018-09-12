@@ -10,7 +10,7 @@ namespace BangazonAPI.Models
     public class Customer
     {
         [Key]
-        public int CustomerId { get; set; }
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
@@ -21,5 +21,7 @@ namespace BangazonAPI.Models
         [DataType(DataType.Date)]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime LastInteractionDate { get; set; }
+
+        public List<Product> CustomerProductsList { get; set; }
     }
 }

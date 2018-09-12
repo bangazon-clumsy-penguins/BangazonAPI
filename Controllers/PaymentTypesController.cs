@@ -54,10 +54,10 @@ namespace BangazonAPI.Controllers
 
             if (id != 0)
             {
-                sql = $@"SELECT p.PaymentTypeId,
-                                   p.Type,
+                sql = $@"SELECT p.Id,
+                                p.Label
                            FROM PaymentTypes p
-                           WHERE {id} = p.PaymentTypeId";
+                           WHERE p.Id = {id}";
             }
             else
             {

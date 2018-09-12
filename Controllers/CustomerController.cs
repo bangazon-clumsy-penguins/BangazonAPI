@@ -38,16 +38,19 @@ namespace BangazonAPI.Models
         [HttpGet]
         public async Task<IActionResult> Get(string q, string _include)
         {
-            string sql = "";
+            string sql = "SELECT * FROM Customers ";
 
             if (_include != null && _include.Contains("payments"))
             {
+            }
 
+            if (_include != null && _include.Contains("products"))
+            {
             }
 
             if (q != null)
             {
-
+                string search = ($"SELECT * FROM Customers WHERE * = %{q}%");
             }
 
             Console.WriteLine(sql);

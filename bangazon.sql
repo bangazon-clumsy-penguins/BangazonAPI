@@ -1,65 +1,5 @@
-/*
 
-DELETE FROM EmployeeTrainings;
-DELETE FROM EmployeeComputers;
-DELETE FROM Employees;
-DELETE FROM Departments;
-DELETE FROM Computers;
-DELETE FROM Trainings;
-
-DELETE FROM OrderedProducts;
-DELETE FROM Orders;
-DELETE FROM Products;
-DELETE FROM CustomerAccounts;
-DELETE FROM ProductTypes;
-DELETE FROM PaymentTypes;
-DELETE FROM Customers;
-
-
-ALTER TABLE EmployeeTrainings DROP CONSTRAINT [FK_Employees];
-ALTER TABLE EmployeeTrainings DROP CONSTRAINT [FK_Trainings];
-ALTER TABLE EmployeeComputers DROP CONSTRAINT [FK_Employees];
-ALTER TABLE EmployeeComputers DROP CONSTRAINT [FK_Computers];
-ALTER TABLE Employees DROP CONSTRAINT [FK_Departments];
-
-ALTER TABLE OrderedProducts DROP CONSTRAINT [FK_Products];
-ALTER TABLE OrderedProducts DROP CONSTRAINT [FK_Orders];
-ALTER TABLE Orders DROP CONSTRAINT [FK_Customers];
-ALTER TABLE Orders DROP CONSTRAINT [FK_CustomerAccounts];
-ALTER TABLE Products DROP CONSTRAINT [FK_ProductTypes];
-ALTER TABLE Products DROP CONSTRAINT [FK_Customers];
-ALTER TABLE CustomerAccounts DROP CONSTRAINT [FK_Customers];
-ALTER TABLE CustomerAccounts DROP CONSTRAINT [FK_PaymentTypes];
-
-
-DROP TABLE IF EXISTS EmployeeTrainings;
-DROP TABLE IF EXISTS EmployeeComputers;
-DROP TABLE IF EXISTS Employees;
-DROP TABLE IF EXISTS Departments;
-DROP TABLE IF EXISTS Computers;
-DROP TABLE IF EXISTS Trainings;
-
-DROP TABLE IF EXISTS OrderedProducts;
-DROP TABLE IF EXISTS Orders;
-DROP TABLE IF EXISTS Products;
-DROP TABLE IF EXISTS CustomerAccounts;
-DROP TABLE IF EXISTS ProductTypes;
-DROP TABLE IF EXISTS PaymentTypes;
-DROP TABLE IF EXISTS Customers;
-
-*/
-
-/*
-CREATE TABLE Instructor (
-    Id	INTEGER NOT NULL PRIMARY KEY IDENTITY,
-    FirstName	varchar(80) NOT NULL,
-    LastName	varchar(80) NOT NULL,
-    SlackHandle	varchar(80) NOT NULL,
-    Specialty varchar(80),
-    CohortId	INTEGER NOT NULL,
-    CONSTRAINT FK_Cohort FOREIGN KEY(CohortId) REFERENCES Cohort(Id)
-);
-*/
+/* Company interface API */
 
 CREATE TABLE Trainings (
 	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
@@ -108,4 +48,62 @@ CREATE TABLE EmployeeComputers (
 	ComputerId INT NOT NULL,
 	CONSTRAINT FK_Employees FOREIGN KEY(EmployeeId) REFERENCES Employees(Id),
 	CONSTRAINT FK_Computers FOREIGN KEY(ComputerId) REFERENCES Computers(Id)
+);
+
+
+/* Customer interface API */
+
+CREATE TABLE ProductTypes (
+	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+	Label VARCHAR NOT NULL
+);
+
+CREATE TABLE PaymentTypes (
+	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+	Label VARCHAR NOT NULL
+);
+
+CREATE TABLE Customers (
+	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+	FirstName VARCHAR NOT NULL,
+	LastName VARCHAR NOT NULL,
+	JoinDate DATE NOT NULL,
+	LastInteractionDate DATE NOT NULL
+);
+
+CREATE TABLE Products (
+	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+	Title VARCHAR NOT NULL,
+	Description VARCHAR NOT NULL,
+	Quantity INTEGER NOT NULL,
+	Price MONEY NOT NULL,
+	ProductTypeId INTEGER NOT NULL,
+	CustomerId INTEGER NOT NULL,
+	CONSTRAINT FK_ProductTypes FOREIGN KEY(ProductTypeId) REFERENCES ProductTypes(Id),
+	CONSTRAINT FK_Customers FOREIGN KEY(CustomerId) REFERENCES Customers(Id)
+);
+
+CREATE TABLE CustomerAccounts (
+	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+	AccountNumber INTEGER NOT NULL,
+	CustomerId INTEGER NOT NULL,
+	PaymentTypeId INTEGER NOT NULL,
+	CONSTRAINT FK_Customers FOREIGN KEY(CustomerId) REFERENCES Customers(Id),
+	CONSTRAINT FK_PaymentTypesId FOREIGN KEY(PaymentTypesId) REFERENCES PaymentTypes(Id)
+);
+
+CREATE TABLE Orders (
+	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+	CustomerId INTEGER NOT NULL,
+	CustomerAccountId INTEGER,
+	CONSTRAINT FK_Customers FOREIGN KEY(CustomerId) REFERENCES Customers(Id),
+	CONSTRAINT FK_CustomerAccounts FOREIGN KEY(CustomerAccountId) REFERENCES CustomerAccounts(Id)
+);
+
+CREATE TABLE OrderedProducts (
+	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
+	ProductId INTEGER NOT NULL,
+	OrderId INTEGER NOT NULL,
+	CONSTRAINT FK_Products FOREIGN KEY(ProductId) REFERENCES Products(Id),
+	CONSTRAINT FK_Orders FOREIGN KEY(OrderId) REFERENCES Orders(Id)
 );

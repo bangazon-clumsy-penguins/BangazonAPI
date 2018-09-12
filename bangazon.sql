@@ -29,15 +29,15 @@ CREATE TABLE Employees (
 	HireDate DATE NOT NULL,
 	IsSupervisor BIT NOT NULL,
 	DepartmentId INT NOT NULL,
-    CONSTRAINT FK_Departments FOREIGN KEY(DepartmentId) REFERENCES Departments(Id)
+    CONSTRAINT FK_Departments1 FOREIGN KEY(DepartmentId) REFERENCES Departments(Id)
 );
 
 CREATE TABLE EmployeeTrainings (
 	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
 	EmployeeId INT NOT NULL,
 	TrainingId INT NOT NULL,
-	CONSTRAINT FK_Employees FOREIGN KEY(EmployeeId) REFERENCES Employees(Id),
-	CONSTRAINT FK_Trainings FOREIGN KEY(TrainingId) REFERENCES Trainings(Id)
+	CONSTRAINT FK_Employees2 FOREIGN KEY(EmployeeId) REFERENCES Employees(Id),
+	CONSTRAINT FK_Trainings2 FOREIGN KEY(TrainingId) REFERENCES Trainings(Id)
 );
 
 CREATE TABLE EmployeeComputers (
@@ -46,8 +46,8 @@ CREATE TABLE EmployeeComputers (
 	ReturnDate DATE,
 	EmployeeId INT NOT NULL,
 	ComputerId INT NOT NULL,
-	CONSTRAINT FK_Employees FOREIGN KEY(EmployeeId) REFERENCES Employees(Id),
-	CONSTRAINT FK_Computers FOREIGN KEY(ComputerId) REFERENCES Computers(Id)
+	CONSTRAINT FK_Employees3 FOREIGN KEY(EmployeeId) REFERENCES Employees(Id),
+	CONSTRAINT FK_Computers3 FOREIGN KEY(ComputerId) REFERENCES Computers(Id)
 );
 
 
@@ -79,8 +79,8 @@ CREATE TABLE Products (
 	Price MONEY NOT NULL,
 	ProductTypeId INTEGER NOT NULL,
 	CustomerId INTEGER NOT NULL,
-	CONSTRAINT FK_ProductTypes FOREIGN KEY(ProductTypeId) REFERENCES ProductTypes(Id),
-	CONSTRAINT FK_Customers FOREIGN KEY(CustomerId) REFERENCES Customers(Id)
+	CONSTRAINT FK_ProductTypes4 FOREIGN KEY(ProductTypeId) REFERENCES ProductTypes(Id),
+	CONSTRAINT FK_Customers4 FOREIGN KEY(CustomerId) REFERENCES Customers(Id)
 );
 
 CREATE TABLE CustomerAccounts (
@@ -88,22 +88,22 @@ CREATE TABLE CustomerAccounts (
 	AccountNumber INTEGER NOT NULL,
 	CustomerId INTEGER NOT NULL,
 	PaymentTypeId INTEGER NOT NULL,
-	CONSTRAINT FK_Customers FOREIGN KEY(CustomerId) REFERENCES Customers(Id),
-	CONSTRAINT FK_PaymentTypesId FOREIGN KEY(PaymentTypesId) REFERENCES PaymentTypes(Id)
+	CONSTRAINT FK_Customers5 FOREIGN KEY(CustomerId) REFERENCES Customers(Id),
+	CONSTRAINT FK_PaymentTypesId5 FOREIGN KEY(PaymentTypeId) REFERENCES PaymentTypes(Id)
 );
 
 CREATE TABLE Orders (
 	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
 	CustomerId INTEGER NOT NULL,
 	CustomerAccountId INTEGER,
-	CONSTRAINT FK_Customers FOREIGN KEY(CustomerId) REFERENCES Customers(Id),
-	CONSTRAINT FK_CustomerAccounts FOREIGN KEY(CustomerAccountId) REFERENCES CustomerAccounts(Id)
+	CONSTRAINT FK_Customers6 FOREIGN KEY(CustomerId) REFERENCES Customers(Id),
+	CONSTRAINT FK_CustomerAccounts6 FOREIGN KEY(CustomerAccountId) REFERENCES CustomerAccounts(Id)
 );
 
 CREATE TABLE OrderedProducts (
 	Id INTEGER NOT NULL PRIMARY KEY IDENTITY,
 	ProductId INTEGER NOT NULL,
 	OrderId INTEGER NOT NULL,
-	CONSTRAINT FK_Products FOREIGN KEY(ProductId) REFERENCES Products(Id),
-	CONSTRAINT FK_Orders FOREIGN KEY(OrderId) REFERENCES Orders(Id)
+	CONSTRAINT FK_Products7 FOREIGN KEY(ProductId) REFERENCES Products(Id),
+	CONSTRAINT FK_Orders7 FOREIGN KEY(OrderId) REFERENCES Orders(Id)
 );

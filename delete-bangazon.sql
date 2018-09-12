@@ -1,5 +1,6 @@
 /* SQL script to delete information from all tables, drop FK constraints, and drop all tables */
 
+/*
 DELETE FROM EmployeeTrainings;
 DELETE FROM EmployeeComputers;
 DELETE FROM Employees;
@@ -14,22 +15,22 @@ DELETE FROM CustomerAccounts;
 DELETE FROM ProductTypes;
 DELETE FROM PaymentTypes;
 DELETE FROM Customers;
+*/
 
+ALTER TABLE EmployeeTrainings DROP CONSTRAINT [FK_Employees2];
+ALTER TABLE EmployeeTrainings DROP CONSTRAINT [FK_Trainings2];
+ALTER TABLE EmployeeComputers DROP CONSTRAINT [FK_Employees3];
+ALTER TABLE EmployeeComputers DROP CONSTRAINT [FK_Computers3];
+ALTER TABLE Employees DROP CONSTRAINT [FK_Departments1];
 
-ALTER TABLE EmployeeTrainings DROP CONSTRAINT [FK_Employees];
-ALTER TABLE EmployeeTrainings DROP CONSTRAINT [FK_Trainings];
-ALTER TABLE EmployeeComputers DROP CONSTRAINT [FK_Employees];
-ALTER TABLE EmployeeComputers DROP CONSTRAINT [FK_Computers];
-ALTER TABLE Employees DROP CONSTRAINT [FK_Departments];
-
-ALTER TABLE OrderedProducts DROP CONSTRAINT [FK_Products];
-ALTER TABLE OrderedProducts DROP CONSTRAINT [FK_Orders];
-ALTER TABLE Orders DROP CONSTRAINT [FK_Customers];
-ALTER TABLE Orders DROP CONSTRAINT [FK_CustomerAccounts];
-ALTER TABLE Products DROP CONSTRAINT [FK_ProductTypes];
-ALTER TABLE Products DROP CONSTRAINT [FK_Customers];
-ALTER TABLE CustomerAccounts DROP CONSTRAINT [FK_Customers];
-ALTER TABLE CustomerAccounts DROP CONSTRAINT [FK_PaymentTypes];
+ALTER TABLE OrderedProducts DROP CONSTRAINT [FK_Products7];
+ALTER TABLE OrderedProducts DROP CONSTRAINT [FK_Orders7];
+ALTER TABLE Orders DROP CONSTRAINT [FK_Customers6];
+ALTER TABLE Orders DROP CONSTRAINT [FK_CustomerAccounts6];
+ALTER TABLE Products DROP CONSTRAINT [FK_ProductTypes4];
+ALTER TABLE Products DROP CONSTRAINT [FK_Customers4];
+ALTER TABLE CustomerAccounts DROP CONSTRAINT [FK_Customers5];
+ALTER TABLE CustomerAccounts DROP CONSTRAINT [FK_PaymentTypes5];
 
 
 DROP TABLE IF EXISTS EmployeeTrainings;

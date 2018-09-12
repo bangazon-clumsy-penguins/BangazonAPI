@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BangazonAPI.Models
 {
-    public class EmployeeComputers
+    public class EmployeeComputer
     {
 
         [Key]

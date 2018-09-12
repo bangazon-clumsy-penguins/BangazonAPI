@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using BangazonAPI.Models;
 using Dapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,23 +36,51 @@ namespace BangazonAPI.Controllers
             string sql = "SELECT * FROM PaymentType";
 
             using (IDbConnection conn = Connection) {
-                var paymentTypeQuery = await conn.QueryAsync(sql);
-                return Ok(paymentTypeQuery);
+                var allPaymentTypesQuery = await conn.QueryAsync<PaymentType>(sql);
+                return Ok(allPaymentTypesQuery);
             }
             
         }
 
         // GET: api/PaymentType/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        [HttpGet("{id}", Name = "GetPaymentType")]
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            string sql = "";
+
+            if (id != 0)
+            {
+                sql = $@"SELECT p.PaymentTypeId,
+                                   p.Type,
+                           FROM PaymentType p
+                           WHERE {id} = p.PaymentTypeId";
+            }
+            else {
+                sql = $"SELECT * FROM PaymentType";
+            }
+
+            using (IDbConnection conn = Connection) {
+                var paymentTypeQuery = await conn.QueryAsync<PaymentType>(sql);
+                return Ok(paymentTypeQuery);
+            }
+            
+            
         }
 
         // POST: api/PaymentType
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> PostAsync([FromBody] PaymentType paymentType)
         {
+            string sql = $@"INSERT INTO PaymentType (Type)
+            VALUES ({paymentType.Type});
+            SELECT MAX(PaymentTypeId) FROM PaymentType";
+
+            using (IDbConnection conn = Connection) {
+                var createPaymentType = (await conn.QueryAsync<int>(sql)).Single();
+                paymentType.PaymentTypeId = createPaymentType;
+                return CreatedAtRoute("GetPaymentType", new { id = createPaymentType}, paymentType);
+            }
+
         }
 
         // PUT: api/PaymentType/5

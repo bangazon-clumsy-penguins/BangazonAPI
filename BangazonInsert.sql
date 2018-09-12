@@ -6,11 +6,11 @@ INSERT INTO ProductTypes (Label) VALUES
 ,('Guns')
 
 INSERT INTO Customers (FirstName, LastName, JoinDate, LastInteractionDate) VALUES 
-('Smith', 'Tom', '2016-01-01', '2017-01-01')
-,('Johnson', 'Jill', '2016-01-02', '2018-01-01')
-,('Williams', 'Bill', '2016-01-03', '2018-01-02')
-,('Erickson', 'Sue', '2016-01-04', '2018-01-03')
-,('Haluska', 'Emily', '2016-01-05', '2018-01-04')
+('Tom', 'Smith', '2016-01-01', '2017-01-01')
+,('Jill', 'Johnson', '2016-01-02', '2018-01-01')
+,('Bill', 'Williams', '2016-01-03', '2018-01-02')
+,('Sue', 'Erickson', '2016-01-04', '2018-01-03')
+,('Emily', 'Haluska', '2016-01-05', '2018-01-04')
 
 INSERT INTO PaymentTypes (Label) VALUES 
 ('Visa')
@@ -18,34 +18,34 @@ INSERT INTO PaymentTypes (Label) VALUES
 ,('AmericanExpress')
 
 INSERT INTO Products (Title, Description, Quantity, Price, ProductTypeId, CustomerId) VALUES 
-('Football', 'Sick Football', 7, 47.5, (SELECT Id FROM ProductTypes WHERE Name='Balls'), (SELECT Id FROM Customers WHERE FirstName='Tom' AND LastName='Smith'))
-,('RazorYo', 'Sweet Yo Yo', 6, 44.98, (SELECT Id FROM ProductTypes WHERE Name='Yo-Yos'), (SELECT Id FROM Customers WHERE FirstName='Jill' AND LastName='Johnson'))
-,('AirJordans', 'Really nice shoes', 5, 5000.48, (SELECT Id FROM ProductTypes WHERE Name='Shoes'), (SELECT Id FROM Customers WHERE FirstName='Bill' AND LastName='Williams'))
-,('Huffy', 'Great bike bro', 4, 746.12, (SELECT Id FROM ProductTypes WHERE Name='Bikes'), (SELECT Id FROM Customers WHERE FirstName='Sue' AND LastName='Erickson'))
-,('Colt 45', 'Deadly Weapon', 3, 1222.56, (SELECT Id FROM ProductTypes WHERE Name='Guns'), (SELECT Id FROM Customers WHERE FirstName='Emily' AND LastName='Haluska'))
+('Football', 'Sick Football', 7, 47.5, (SELECT Id FROM ProductTypes WHERE Label='Balls'), (SELECT Id FROM Customers WHERE FirstName='Tom' AND LastName='Smith'))
+,('RazorYo', 'Sweet Yo Yo', 6, 44.98, (SELECT Id FROM ProductTypes WHERE Label='Yo-Yos'), (SELECT Id FROM Customers WHERE FirstName='Jill' AND LastName='Johnson'))
+,('AirJordans', 'Really nice shoes', 5, 5000.48, (SELECT Id FROM ProductTypes WHERE Label='Shoes'), (SELECT Id FROM Customers WHERE FirstName='Bill' AND LastName='Williams'))
+,('Huffy', 'Great bike bro', 4, 746.12, (SELECT Id FROM ProductTypes WHERE Label='Bikes'), (SELECT Id FROM Customers WHERE FirstName='Sue' AND LastName='Erickson'))
+,('Colt 45', 'Deadly Weapon', 3, 1222.56, (SELECT Id FROM ProductTypes WHERE Label='Guns'), (SELECT Id FROM Customers WHERE FirstName='Emily' AND LastName='Haluska'))
 
-INSERT INTO CustomerAccounts (AccountNumber, CustomerId, PaymentType) VALUES 
-(461898165, (SELECT Id FROM CUSTOMER WHERE FirstName='Tom' AND LastName='Smith'), (SELECT Id FROM PaymentType WHERE Label='Visa'))
-,(498354815, (SELECT Id FROM CUSTOMER WHERE FirstName='Jill' AND LastName='Johnson'), (SELECT Id FROM PaymentType WHERE Label='MasterCard'))
-,(645987456, (SELECT Id FROM CUSTOMER WHERE FirstName='Bill' AND LastName='Williams'), (SELECT Id FROM PaymentType WHERE Label='Visa'))
-,(623145284, (SELECT Id FROM CUSTOMER WHERE FirstName='Sue' AND LastName='Erickson'), (SELECT Id FROM PaymentType WHERE Label='AmericanExpress'))
-,(561862348, (SELECT Id FROM CUSTOMER WHERE FirstName='Emily' AND LastName='Haluska'), (SELECT Id FROM PaymentType WHERE Label='Visa'))
+INSERT INTO CustomerAccounts (AccountNumber, CustomerId, PaymentTypeId) VALUES 
+(461898165, (SELECT Id FROM Customers WHERE FirstName='Tom' AND LastName='Smith'), (SELECT Id FROM PaymentTypes WHERE Label='Visa'))
+,(498354815, (SELECT Id FROM Customers WHERE FirstName='Jill' AND LastName='Johnson'), (SELECT Id FROM PaymentTypes WHERE Label='MasterCard'))
+,(645987456, (SELECT Id FROM Customers WHERE FirstName='Bill' AND LastName='Williams'), (SELECT Id FROM PaymentTypes WHERE Label='Visa'))
+,(623145284, (SELECT Id FROM Customers WHERE FirstName='Sue' AND LastName='Erickson'), (SELECT Id FROM PaymentTypes WHERE Label='AmericanExpress'))
+,(561862348, (SELECT Id FROM Customers WHERE FirstName='Emily' AND LastName='Haluska'), (SELECT Id FROM PaymentTypes WHERE Label='Visa'))
 
-INSERT INTO Orders (Date, CustomerId, PaymentId) VALUES 
-('2018-01-01', (SELECT Id FROM Customers WHERE FirstName='Tom' AND LastName='Smith'), (SELECT Id FROM CustmerAccounts WHERE AccountNumber=498366615))
-,('2018-01-02', (SELECT Id FROM Customers WHERE FirstName='Jill' AND LastName='Johnson'), (SELECT Id FROM CustmerAccounts WHERE AccountNumber=498354815))
-,('2018-01-03', (SELECT Id FROM Customers WHERE FirstName='Bill' AND LastName='Williams'), (SELECT Id FROM CustmerAccounts WHERE AccountNumber=645987456))
-,('2018-01-04', (SELECT Id FROM Customers WHERE FirstName='Sue' AND LastName='Erickson'), (SELECT Id FROM CustmerAccounts WHERE AccountNumber=623145284))
-,('2018-01-05', (SELECT Id FROM Customers WHERE FirstName='Emily' AND LastName='Haluska'), (SELECT Id FROM CustmerAccounts WHERE AccountNumber=561862348))
+INSERT INTO Orders (CustomerId, CustomerAccountId) VALUES 
+((SELECT Id FROM Customers WHERE FirstName='Tom' AND LastName='Smith'), (SELECT Id FROM CustomerAccounts WHERE AccountNumber=498366615))
+,((SELECT Id FROM Customers WHERE FirstName='Jill' AND LastName='Johnson'), (SELECT Id FROM CustomerAccounts WHERE AccountNumber=498354815))
+,((SELECT Id FROM Customers WHERE FirstName='Bill' AND LastName='Williams'), (SELECT Id FROM CustomerAccounts WHERE AccountNumber=645987456))
+,((SELECT Id FROM Customers WHERE FirstName='Sue' AND LastName='Erickson'), (SELECT Id FROM CustomerAccounts WHERE AccountNumber=623145284))
+,((SELECT Id FROM Customers WHERE FirstName='Emily' AND LastName='Haluska'), (SELECT Id FROM CustomerAccounts WHERE AccountNumber=561862348))
 
-INSERT INTO OrderProducts (ProductId, OrderId) VALUES 
+INSERT INTO OrderedProducts (ProductId, OrderId) VALUES 
 ((SELECT Id From Products Where Title='Football'), 1)
 ,((SELECT Id From Products Where Title='RazorYo'), 2)
 ,((SELECT Id From Products Where Title='AirJordans'), 3)
 ,((SELECT Id From Products Where Title='Huffy'), 4)
 ,((SELECT Id From Products Where Title='Colt 45'), 5)
 
-INSERT INTO Computers (Model, PurchaseDate, DecommisionDate) VALUES 
+INSERT INTO Computers (Model, PurchaseDate, DecommissionDate) VALUES 
 ('PC', '2018-01-01', null)
 ,('Mac', '2018-01-02', null)
 ,('PC', '2018-01-03', null)
@@ -67,11 +67,11 @@ INSERT INTO Trainings (Name, StartDate, EndDate, MaxOccupancy) VALUES
 ,('Physical Training', '2018-05-09', '2018-06-13', 12)
 
 INSERT INTO Employees (FirstName, LastName, HireDate, IsSupervisor, DepartmentId) VALUES 
-('Smith', 'Tom', '2015-05-01', 1, (SELECT Id FROM Departments WHERE Name='Finance'))
-,('Johnson', 'Sarah', '2015-05-02', 1, (SELECT Id FROM Departments WHERE Name='Maintenance'))
-,('Williams', 'Bill', '2015-05-03', 1, (SELECT Id FROM Departments WHERE Name='HR'))
-,('Erickson', 'Sue', '2015-05-04', 1, (SELECT Id FROM Departments WHERE Name='Accounting'))
-,('Haluska', 'Emily', '2015-05-05', 1, (SELECT Id FROM Departments WHERE Name='Marketing'))
+('Tom', 'Smith', '2015-05-01', 1, (SELECT Id FROM Departments WHERE Name='Finance'))
+,('Sarah', 'Johnson', '2015-05-02', 1, (SELECT Id FROM Departments WHERE Name='Maintenance'))
+,('Bill', 'Williams', '2015-05-03', 1, (SELECT Id FROM Departments WHERE Name='HR'))
+,('Sue', 'Erickson', '2015-05-04', 1, (SELECT Id FROM Departments WHERE Name='Accounting'))
+,('Emily', 'Haluska', '2015-05-05', 1, (SELECT Id FROM Departments WHERE Name='Marketing'))
 
 INSERT INTO EmployeeComputers (AssignmentDate, ReturnDate, EmployeeId, ComputerId) VALUES 
 ('2018-06-06', null, 1, 5)

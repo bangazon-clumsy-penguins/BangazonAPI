@@ -32,7 +32,7 @@ INSERT INTO CustomerAccounts (AccountNumber, CustomerId, PaymentTypeId) VALUES
 ,(561862348, (SELECT Id FROM Customers WHERE FirstName='Emily' AND LastName='Haluska'), (SELECT Id FROM PaymentTypes WHERE Label='Visa'))
 
 INSERT INTO Orders (CustomerId, CustomerAccountId) VALUES 
-((SELECT Id FROM Customers WHERE FirstName='Tom' AND LastName='Smith'), (SELECT Id FROM CustomerAccounts WHERE AccountNumber=498366615))
+((SELECT Id FROM Customers WHERE FirstName='Tom' AND LastName='Smith'), (SELECT Id FROM CustomerAccounts WHERE AccountNumber=461898165))
 ,((SELECT Id FROM Customers WHERE FirstName='Jill' AND LastName='Johnson'), (SELECT Id FROM CustomerAccounts WHERE AccountNumber=498354815))
 ,((SELECT Id FROM Customers WHERE FirstName='Bill' AND LastName='Williams'), (SELECT Id FROM CustomerAccounts WHERE AccountNumber=645987456))
 ,((SELECT Id FROM Customers WHERE FirstName='Sue' AND LastName='Erickson'), (SELECT Id FROM CustomerAccounts WHERE AccountNumber=623145284))
@@ -86,3 +86,4 @@ INSERT INTO EmployeeTrainings (EmployeeId, TrainingId) VALUES
 ,(3, 1)
 ,(4, 5)
 ,(5, 4)
+

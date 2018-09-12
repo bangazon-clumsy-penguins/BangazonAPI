@@ -19,12 +19,15 @@ namespace BangazonAPI.Controllers
 
         private readonly IConfiguration _config;
 
-        public PaymentTypesController(IConfiguration config) {
+        public PaymentTypesController(IConfiguration config)
+        {
             _config = config;
         }
 
-        public IDbConnection Connection {
-            get {
+        public IDbConnection Connection
+        {
+            get
+            {
                 return new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             }
         }
@@ -33,9 +36,10 @@ namespace BangazonAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            string sql = "SELECT * FROM PaymentType";
+            string sql = "SELECT * FROM PaymentTypes";
 
-            using (IDbConnection conn = Connection) {
+            using (IDbConnection conn = Connection)
+            {
                 var allPaymentTypesQuery = await conn.QueryAsync<PaymentType>(sql);
                 return Ok(allPaymentTypesQuery);
             }
@@ -52,14 +56,16 @@ namespace BangazonAPI.Controllers
             {
                 sql = $@"SELECT p.PaymentTypeId,
                                    p.Type,
-                           FROM PaymentType p
+                           FROM PaymentTypes p
                            WHERE {id} = p.PaymentTypeId";
             }
-            else {
-                sql = $"SELECT * FROM PaymentType";
+            else
+            {
+                sql = $"SELECT * FROM PaymentTypes";
             }
 
-            using (IDbConnection conn = Connection) {
+            using (IDbConnection conn = Connection)
+            {
                 var paymentTypeQuery = await conn.QueryAsync<PaymentType>(sql);
                 return Ok(paymentTypeQuery);
             }
@@ -71,14 +77,15 @@ namespace BangazonAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] PaymentType paymentType)
         {
-            string sql = $@"INSERT INTO PaymentType (Type)
-            VALUES ({paymentType.Type});
-            SELECT MAX(PaymentTypeId) FROM PaymentType";
+            string sql = $@"INSERT INTO PaymentTypes (Type)
+            VALUES ({paymentType.Label});
+            SELECT MAX(PaymentTypeId) FROM PaymentTypes";
 
-            using (IDbConnection conn = Connection) {
+            using (IDbConnection conn = Connection)
+            {
                 var createPaymentType = (await conn.QueryAsync<int>(sql)).Single();
                 paymentType.PaymentTypeId = createPaymentType;
-                return CreatedAtRoute("GetPaymentType", new { id = createPaymentType}, paymentType);
+                return CreatedAtRoute("GetPaymentType", new { id = createPaymentType }, paymentType);
             }
 
         }
@@ -94,13 +101,15 @@ namespace BangazonAPI.Controllers
 
             try
             {
-                using (IDbConnection conn = Connection) {
+                using (IDbConnection conn = Connection)
+                {
                     int rowsAffected = await conn.ExecuteAsync(sql);
                     if (rowsAffected > 0)
                     {
                         return new StatusCodeResult(StatusCodes.Status204NoContent);
                     }
-                    else {
+                    else
+                    {
                         throw new Exception("No Rows Edited");
                     }
                 }
@@ -111,7 +120,8 @@ namespace BangazonAPI.Controllers
                 {
                     return NotFound();
                 }
-                else {
+                else
+                {
                     throw;   
                 }
             }
@@ -122,24 +132,26 @@ namespace BangazonAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            string sql = $"DELETE FROM PaymentType p WHERE p.Id = {id}";
+            string sql = $"DELETE FROM PaymentTypes p WHERE p.Id = {id}";
 
-            using (IDbConnection conn = Connection) {
+            using (IDbConnection conn = Connection)
+            {
                 var deletePaymentType = await conn.ExecuteAsync(sql);
-                if () {
-
+                if (deletePaymentType > 0)
+                {
+                    return new StatusCodeResult(StatusCodes.Status204NoContent);
+                }
+                else
+                {
+                    throw new Exception("No PaymentType Found");
                 }
             }
-
-
-
-
         }
 
 
         private bool PaymentTypeExists(int id)
         {
-            string sql = $"SELECT Id, Name, Language FROM Exercise WHERE Id = {id}";
+            string sql = $"SELECT Id, Label FROM PaymentTypes WHERE Id = {id}";
             using (IDbConnection conn = Connection)
             {
                 return conn.Query<PaymentType>(sql).Count() > 0;

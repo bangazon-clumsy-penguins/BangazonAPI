@@ -13,11 +13,11 @@ namespace BangazonAPI.Models
 {
     [Route("[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class CustomersController : ControllerBase
     {
         private readonly IConfiguration _config;
 
-        public CustomerController(IConfiguration config)
+        public CustomersController(IConfiguration config)
         {
             _config = config;
         }
@@ -31,8 +31,8 @@ namespace BangazonAPI.Models
         }
 
         /*
-            GET /customers?q=test
-            GET /customers?_include=payments
+            GET /Customers?q=test
+            GET /Customers?_include=payments
          */
         [HttpGet]
         public async Task<IActionResult> Get(string q, string _include)

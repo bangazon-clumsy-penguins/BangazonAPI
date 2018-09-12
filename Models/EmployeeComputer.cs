@@ -7,19 +7,22 @@ using System.Threading.Tasks;
 
 namespace BangazonAPI.Models
 {
-    public class Customer
+    public class EmployeeComputers
     {
+
         [Key]
         public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
 
         [DataType(DataType.Date)]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime JoinDate { get; set; }
+        public DateTime AssignmentDate { get; set; }
 
         [DataType(DataType.Date)]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime LastInteractionDate { get; set; }
+        public DateTime ReturnDate { get; set; }
+
+        public int EmployeeId { get; set; }
+        public int ComputerId { get; set; }
+
     }
 }

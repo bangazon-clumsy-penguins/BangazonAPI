@@ -19,7 +19,7 @@ namespace BangazonAPI.Models
 
         [DataType(DataType.Date)]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime ReturnDate { get; set; }
+        public DateTime? ReturnDate { get; set; }
 
         public int EmployeeId { get; set; }
         public int ComputerId { get; set; }

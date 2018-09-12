@@ -20,7 +20,7 @@ namespace BangazonAPI.Models
 
         [DataType(DataType.Date)]
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime DecommisionDate { get; set; }
+        public DateTime? DecommisionDate { get; set; }
 
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,16 +7,17 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Dapper;
 using Microsoft.AspNetCore.Http;
+using System.Data.SqlClient;
 
 namespace BangazonAPI.Models
 {
     [Route("[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class ProductTypeController : ControllerBase
     {
         private readonly IConfiguration _config;
 
-        public CustomerController(IConfiguration config)
+        public ProductTypeController(IConfiguration config)
         {
             _config = config;
         }
@@ -30,84 +31,65 @@ namespace BangazonAPI.Models
         }
 
         /*
-            GET /customers?q=test
-            GET /customers?_include=payments
+            GET /ProductTypes
+            GET /ProductTypes?=label
          */
+       
         [HttpGet]
-        public async Task<IActionResult> Get(string q, string _include)
+        public async Task<IActionResult> Get(string label)
         {
-            string sql = "";
-
-            if (_include != null && _include.Contains("payments"))
-            {
-
-            }
-
-            if (q != null)
-            {
-
-            }
-
-            Console.WriteLine(sql);
-
             using (IDbConnection conn = Connection)
             {
-                if (_include == "payments")
+                string sql = "SELECT * FROM ProductTypes";
+
+                if (label != null)
                 {
-                    Dictionary<int, Customer> customerPayments = new Dictionary<int, Customer>();
-
-                    var customers = await conn.QueryAsync<Customer, PaymentType, Customer>(
-                        sql,
-                        (customer, paymentType) =>
-                        {
-                            return customer;
-                        }
-                    );
-                    return Ok(customers.Values);
-
+                    sql += $" WHERE Label='{label}'";
                 }
-                IEnumerable<Customer> customers = await conn.QueryAsync<Customer>(sql);
-                return Ok(customers);
+
+                var productTypes = await conn.QueryAsync<ProductType>(sql);
+                return Ok(productTypes);
             }
+
         }
 
-        // GET /customers/5
-        [HttpGet("{id}", Name = "GetCustomer")]
-        public async Task<IActionResult> Get([FromRoute]int id)
+        // GET api/values/5
+        [HttpGet("{id}", Name = "GetProductType")]
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
-            string sql = $"SELECT Id, Name, Language FROM Customer WHERE Id = {id}";
-
             using (IDbConnection conn = Connection)
             {
-                IEnumerable<Customer> customers = await conn.QueryAsync<Customer>(sql);
-                return Ok(customers);
+                string sql = $"SELECT * FROM ProductType WHERE Id = {id}";
+
+                var singleProductType = (await conn.QueryAsync<ProductType>(sql)).Single();
+                return Ok(singleProductType);
             }
         }
 
-        // POST /customers
+        // POST /ProductTypes
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Customer customer)
+        public async Task<IActionResult> Post([FromBody] ProductType ProductType)
         {
-            string sql = $@"INSERT INTO Customer
-            ()
+            string sql = $@"INSERT INTO ProductType
+            (Label)
             VALUES
-            ();
-            select MAX(Id) from Customer;";
+            ('{ProductType.Label}');
+            select MAX(Id) from ProductType;";
 
             using (IDbConnection conn = Connection)
             {
-                var customerId = (await conn.QueryAsync<int>(sql)).Single();
-                customer.Id = customerId;
-                return CreatedAtRoute("GetCustomer", new { id = customerId }, customer);
+                var ProductTypeId = (await conn.QueryAsync<int>(sql)).Single();
+                ProductType.Id = ProductTypeId;
+                return CreatedAtRoute("GetProductType", new { id = ProductTypeId }, ProductType);
             }
         }
 
         /*
-            PUT /customers/5
+            PUT /ProductTypes/5
 
             The [HttpPut] attribute ensures that this method will handle any
-            request to a `/customers/{id}` with the PUT HTTP verb. Alternatively,
-            I could name this method `PutCustomer`, or just `Put` and ASP.NET
+            request to a `/ProductTypes/{id}` with the PUT HTTP verb. Alternatively,
+            I could name this method `PutProductType`, or just `Put` and ASP.NET
             will detect that the word `Put` is in the method name and ensure
             that it will only be invoke for PUT operations.
 
@@ -116,11 +98,11 @@ namespace BangazonAPI.Models
             verb is handled.
          */
         [HttpPut("{id}")]
-        public async Task<IActionResult> ChangeCustomer(int id, [FromBody] Customer customer)
+        public async Task<IActionResult> ChangeProductType(int id, [FromBody] ProductType ProductType)
         {
             string sql = $@"
-            UPDATE Customer
-            SET '
+            UPDATE ProductType
+            SET Label = '{ProductType.Label}'
             WHERE Id = {id}";
 
             try
@@ -137,7 +119,7 @@ namespace BangazonAPI.Models
             }
             catch (Exception)
             {
-                if (!CustomerExists(id))
+                if (!ProductTypeExists(id))
                 {
                     return NotFound();
                 }
@@ -148,11 +130,11 @@ namespace BangazonAPI.Models
             }
         }
 
-        // DELETE /customers/5
+        // DELETE /ProductTypes/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            string sql = $@"DELETE FROM Customer WHERE Id = {id}";
+            string sql = $@"DELETE FROM ProductType WHERE Id = {id}";
 
             using (IDbConnection conn = Connection)
             {
@@ -166,12 +148,12 @@ namespace BangazonAPI.Models
 
         }
 
-        private bool CustomerExists(int id)
+        private bool ProductTypeExists(int id)
         {
-            string sql = $"SELECT Id, Name, Language FROM Customer WHERE Id = {id}";
+            string sql = $"SELECT Id, Label FROM ProductType WHERE Id = {id}";
             using (IDbConnection conn = Connection)
             {
-                return conn.Query<Customer>(sql).Count() > 0;
+                return conn.Query<ProductType>(sql).Count() > 0;
             }
         }
     }

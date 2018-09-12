@@ -17,7 +17,7 @@ namespace BangazonAPI.Models
 
         public int Quantity { get; set; }
 
-        public float Price { get; set; }
+        public double Price { get; set; }
 
         public int ProductTypeId { get; set; }
 

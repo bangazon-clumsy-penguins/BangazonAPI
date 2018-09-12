@@ -13,11 +13,11 @@ namespace BangazonAPI.Models
 {
     [Route("[controller]")]
     [ApiController]
-    public class ProductTypeController : ControllerBase
+    public class ProductTypesController : ControllerBase
     {
         private readonly IConfiguration _config;
 
-        public ProductTypeController(IConfiguration config)
+        public ProductTypesController(IConfiguration config)
         {
             _config = config;
         }
@@ -38,6 +38,7 @@ namespace BangazonAPI.Models
         [HttpGet]
         public async Task<IActionResult> Get(string label)
         {
+                
             using (IDbConnection conn = Connection)
             {
                 string sql = "SELECT * FROM ProductTypes";
@@ -59,7 +60,7 @@ namespace BangazonAPI.Models
         {
             using (IDbConnection conn = Connection)
             {
-                string sql = $"SELECT * FROM ProductType WHERE Id = {id}";
+                string sql = $"SELECT * FROM ProductTypes WHERE Id = {id}";
 
                 var singleProductType = (await conn.QueryAsync<ProductType>(sql)).Single();
                 return Ok(singleProductType);
@@ -70,11 +71,11 @@ namespace BangazonAPI.Models
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ProductType ProductType)
         {
-            string sql = $@"INSERT INTO ProductType
+            string sql = $@"INSERT INTO ProductTypes
             (Label)
             VALUES
             ('{ProductType.Label}');
-            select MAX(Id) from ProductType;";
+            select MAX(Id) from ProductTypes;";
 
             using (IDbConnection conn = Connection)
             {
@@ -98,10 +99,10 @@ namespace BangazonAPI.Models
             verb is handled.
          */
         [HttpPut("{id}")]
-        public async Task<IActionResult> ChangeProductType(int id, [FromBody] ProductType ProductType)
+        public async Task<IActionResult> Put(int id, [FromBody] ProductType ProductType)
         {
             string sql = $@"
-            UPDATE ProductType
+            UPDATE ProductTypes
             SET Label = '{ProductType.Label}'
             WHERE Id = {id}";
 
@@ -134,7 +135,7 @@ namespace BangazonAPI.Models
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            string sql = $@"DELETE FROM ProductType WHERE Id = {id}";
+            string sql = $@"DELETE FROM ProductTypes WHERE Id = {id}";
 
             using (IDbConnection conn = Connection)
             {
@@ -150,7 +151,7 @@ namespace BangazonAPI.Models
 
         private bool ProductTypeExists(int id)
         {
-            string sql = $"SELECT Id, Label FROM ProductType WHERE Id = {id}";
+            string sql = $"SELECT Id, Label FROM ProductTypes WHERE Id = {id}";
             using (IDbConnection conn = Connection)
             {
                 return conn.Query<ProductType>(sql).Count() > 0;

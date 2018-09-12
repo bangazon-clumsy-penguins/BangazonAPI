@@ -14,12 +14,12 @@ namespace BangazonAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PaymentTypeController : ControllerBase
+    public class PaymentTypesController : ControllerBase
     {
 
         private readonly IConfiguration _config;
 
-        public PaymentTypeController(IConfiguration config) {
+        public PaymentTypesController(IConfiguration config) {
             _config = config;
         }
 
@@ -85,14 +85,65 @@ namespace BangazonAPI.Controllers
 
         // PUT: api/PaymentType/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] PaymentType paymentType)
         {
+            string sql = $@"
+            UPDATE PaymentTypes
+            SET Label = {paymentType.Label}'
+            WHERE Id = {id}";
+
+            try
+            {
+                using (IDbConnection conn = Connection) {
+                    int rowsAffected = await conn.ExecuteAsync(sql);
+                    if (rowsAffected > 0)
+                    {
+                        return new StatusCodeResult(StatusCodes.Status204NoContent);
+                    }
+                    else {
+                        throw new Exception("No Rows Edited");
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                if (!PaymentTypeExists(id))
+                {
+                    return NotFound();
+                }
+                else {
+                    throw;   
+                }
+            }
+
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            string sql = $"DELETE FROM PaymentType p WHERE p.Id = {id}";
+
+            using (IDbConnection conn = Connection) {
+                var deletePaymentType = await conn.ExecuteAsync(sql);
+                if () {
+
+                }
+            }
+
+
+
+
+        }
+
+
+        private bool PaymentTypeExists(int id)
+        {
+            string sql = $"SELECT Id, Name, Language FROM Exercise WHERE Id = {id}";
+            using (IDbConnection conn = Connection)
+            {
+                return conn.Query<PaymentType>(sql).Count() > 0;
+            }
         }
     }
 }

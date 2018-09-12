@@ -1,6 +1,5 @@
 /* SQL script to delete information from all tables, drop FK constraints, and drop all tables */
 
-/*
 DELETE FROM EmployeeTrainings;
 DELETE FROM EmployeeComputers;
 DELETE FROM Employees;
@@ -15,7 +14,7 @@ DELETE FROM CustomerAccounts;
 DELETE FROM ProductTypes;
 DELETE FROM PaymentTypes;
 DELETE FROM Customers;
-*/
+
 
 ALTER TABLE EmployeeTrainings DROP CONSTRAINT [FK_Employees2];
 ALTER TABLE EmployeeTrainings DROP CONSTRAINT [FK_Trainings2];

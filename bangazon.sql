@@ -89,7 +89,7 @@ CREATE TABLE CustomerAccounts (
 	CustomerId INTEGER NOT NULL,
 	PaymentTypeId INTEGER NOT NULL,
 	CONSTRAINT FK_Customers5 FOREIGN KEY(CustomerId) REFERENCES Customers(Id),
-	CONSTRAINT FK_PaymentTypesId5 FOREIGN KEY(PaymentTypeId) REFERENCES PaymentTypes(Id)
+	CONSTRAINT FK_PaymentTypes5 FOREIGN KEY(PaymentTypeId) REFERENCES PaymentTypes(Id)
 );
 
 CREATE TABLE Orders (

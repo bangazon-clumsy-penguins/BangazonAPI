@@ -98,7 +98,7 @@ namespace BangazonAPI.Models
             using (IDbConnection conn = Connection)
             {
                 var customerId = (await conn.QueryAsync<int>(sql)).Single();
-                customer.CustomerId = customerId;
+                customer.Id = customerId;
                 return CreatedAtRoute("GetCustomer", new { id = customerId }, customer);
             }
         }

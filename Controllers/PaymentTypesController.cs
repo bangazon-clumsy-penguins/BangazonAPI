@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BangazonAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class PaymentTypesController : ControllerBase
     {
@@ -77,9 +77,9 @@ namespace BangazonAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] PaymentType paymentType)
         {
-            string sql = $@"INSERT INTO PaymentTypes (Type)
-            VALUES ({paymentType.Label});
-            SELECT MAX(PaymentTypeId) FROM PaymentTypes";
+            string sql = $@"INSERT INTO PaymentTypes (Label)
+            VALUES ('{paymentType.Label}');
+            SELECT MAX(Id) FROM PaymentTypes";
 
             using (IDbConnection conn = Connection)
             {

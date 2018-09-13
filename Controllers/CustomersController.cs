@@ -38,6 +38,7 @@ namespace BangazonAPI.Models
         [HttpGet]
         public async Task<IActionResult> Get(string q, string _include)
         {
+            string searchQuery = "";
             string sql = "SELECT * FROM Customers ";
 
             if (_include != null && _include.Contains("payments"))
@@ -54,7 +55,8 @@ namespace BangazonAPI.Models
 
             if (q != null)
             {
-                string search = ($"SELECT * FROM Customers WHERE * = %{q}%");
+                searchQuery = q;
+                sql = ($"SELECT * FROM Customers WHERE FirstName LIKE '%{q}%' OR LastName LIKE '%{q}%'");
             }
 
             Console.WriteLine(sql);
@@ -85,7 +87,7 @@ namespace BangazonAPI.Models
                             return thisCustomer;
                         }
                     );
-                    return Ok(customersQuery);  // Used to be .Values
+                    return Ok(customersQuery.Distinct());  // Used to be .Values
 
                 }
 
@@ -107,7 +109,13 @@ namespace BangazonAPI.Models
 
                         return thisCustomer;
                     });
-                    return Ok(customersQuery);
+                    return Ok(customersQuery.Distinct());
+                }
+
+                if (q != null)
+                {
+                    var customersQuery = await conn.QueryAsync<Customer>(sql);
+                    Ok(customersQuery);
                 }
 
                 IEnumerable<Customer> customers = await conn.QueryAsync<Customer>(sql);

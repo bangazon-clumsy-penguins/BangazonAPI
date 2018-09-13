@@ -138,6 +138,7 @@ namespace BangazonAPI.Models
 
         }
 
+        //This method is called when a "No Rows Affected" exception is thrown to check and ensure the item doesn't exist in the DB
         private bool ProductExists(int id)
         {
             string sql = $"SELECT Id FROM Products WHERE Id = {id}";

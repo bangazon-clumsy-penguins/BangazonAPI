@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace BangazonAPI.Models
 {
-    public class CustomerAccount
+    public class ProductType
     {
+
         [Key]
         public int Id { get; set; }
-        public int AccountNumber { get; set; }
-        public int CustomerId { get; set; }
-        public int PaymentTypeId { get; set; }
-        public string PaymentTypeName { get; set; }
+
+        public string Label { get; set; }
+
     }
 }

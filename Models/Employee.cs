@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace BangazonAPI.Models
 {
-    public class Customer
+    public class Employee
     {
+
         [Key]
         public int Id { get; set; }
 
@@ -16,8 +17,11 @@ namespace BangazonAPI.Models
 
         public string LastName { get; set; }
 
-        public DateTime JoinDate { get; set; }
+        public DateTime HireDate { get; set; }
 
-        public DateTime LastInteractionDate { get; set; }
+        public bool isSupervisor { get; set; }
+
+        public int DepartmentId { get; set; }
+
     }
 }

@@ -6,16 +6,13 @@ using System.Threading.Tasks;
 
 namespace BangazonAPI.Models
 {
-    public class Department
+    public class ProductType
     {
+
         [Key]
         public int Id { get; set; }
 
-        public string Name { get; set; }
-
-        public double Budget { get; set; }
-
-        public List<Employee> EmployeeList { get; set; }
+        public string Label { get; set; }
 
     }
 }

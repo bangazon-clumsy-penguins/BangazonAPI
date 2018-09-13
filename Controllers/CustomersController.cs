@@ -38,19 +38,19 @@ namespace BangazonAPI.Models
         [HttpGet]
         public async Task<IActionResult> Get(string q, string _include)
         {
-            string searchQuery = "";
-            string sql = "SELECT * FROM Customers WHERE 1=1";
+            string sql = "SELECT * FROM Customers";
+            if (_include == null) { _include = ""; }
 
-            if (_include != null && _include.Contains("payments"))
+            if (_include.Contains("products"))
             {
-                sql = $@"SELECT * FROM Customers JOIN Orders ON Customers.Id = Orders.CustomerId
-                        JOIN CustomerAccounts ON Orders.CustomerAccountId = CustomerAccounts.Id
-                        JOIN PaymentTypes ON PaymentTypes.Id = CustomerAccounts.PaymentTypeId WHERE 1=1";
+                sql += " JOIN Products ON Products.CustomerId = Customers.Id";
             }
 
-            if (_include != null && _include.Contains("products"))
+            if (_include.Contains("payments"))
             {
-                sql = "SELECT * FROM Customers JOIN Products ON Products.CustomerId = Customers.Id WHERE 1=1";
+                sql += $@" JOIN Orders ON Customers.Id = Orders.CustomerId
+                        JOIN CustomerAccounts ON Orders.CustomerAccountId = CustomerAccounts.Id
+                        JOIN PaymentTypes ON PaymentTypes.Id = CustomerAccounts.PaymentTypeId";
             }
 
             if (q != null)
@@ -58,11 +58,40 @@ namespace BangazonAPI.Models
                 sql += ($" AND FirstName LIKE '%{q}%' OR LastName LIKE '%{q}%'");
             }
 
+            if (q != null || _include != null)
+            {
+                sql += " WHERE 1=1";
+            }
+
             Console.WriteLine(sql);
 
             using (IDbConnection conn = Connection)
             {
-                if (_include == "payments")
+                if (_include.Contains("payments") && _include.Contains("products"))
+                {
+                    Dictionary<int, Customer> customerData = new Dictionary<int, Customer>();
+                    var customersQuery = await conn.QueryAsync<Customer, Product, Order, CustomerAccount, PaymentType, Customer>(
+                        sql, (customer, product, order, customerAccount, paymentType) => {
+
+                            Customer thisCustomer;
+                            CustomerAccount thisCustomerAccount = customerAccount;
+                            thisCustomerAccount.PaymentTypeName = $"{paymentType.Label}";
+
+                            if (!customerData.TryGetValue(customer.Id, out thisCustomer))
+                            {
+                                thisCustomer = customer;
+                                thisCustomer.CustomerAccountsList = new List<CustomerAccount>();
+                                thisCustomer.CustomerProductsList = new List<Product>();
+                                customerData.Add(thisCustomer.Id, thisCustomer);
+                            }
+                            thisCustomer.CustomerAccountsList.Add(customerAccount);
+                            thisCustomer.CustomerProductsList.Add(product);
+                            return thisCustomer;
+                        });
+                    return Ok(customersQuery.Distinct());
+                }
+
+                if (_include.Contains("payments"))
                 {
                     Dictionary<int, Customer> customerPayments = new Dictionary<int, Customer>();
 
@@ -90,7 +119,7 @@ namespace BangazonAPI.Models
 
                 }
 
-                if (_include == "products")
+                if (_include.Contains("products"))
                 {
                     Dictionary<int, Customer> customerProducts = new Dictionary<int, Customer>();
 
@@ -130,7 +159,7 @@ namespace BangazonAPI.Models
 
             using (IDbConnection conn = Connection)
             {
-                IEnumerable<Customer> customers = await conn.QueryAsync<Customer>(sql);
+                Customer customers = (await conn.QueryAsync<Customer>(sql)).Single();
                 return Ok(customers);
             }
         }

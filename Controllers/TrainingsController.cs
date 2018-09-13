@@ -117,7 +117,11 @@ namespace BangazonAPI.Controllers
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> Delete(int id)
 		{
-			string sql = $@"DELETE FROM Exercise WHERE Id = {id}";
+			if (TrainingHasStarted(id))
+			{
+				throw new Exception("Cannot delete a training that has started");
+			}
+			string sql = $@"DELETE FROM Trainings WHERE Id = {id}";
 
 			using (IDbConnection conn = Connection)
 			{
@@ -137,6 +141,22 @@ namespace BangazonAPI.Controllers
 			{
 				return conn.Query<Training>(sql).Count() > 0;
 			}
+		}
+
+		private bool TrainingHasStarted(int id)
+		{
+			string sql = $"SELECT * FROM Trainings WHERE Id = {id}";
+			using (IDbConnection conn = Connection)
+			{
+				DateTime startDate = (conn.Query<Training>(sql)).Single().StartDate;
+				DateTime today = DateTime.Today;
+				return DateTime.Compare(startDate, today) < 0;
+			}
+		}
+
+		private bool TrainingHasEnded(int id)
+		{
+			return false;
 		}
 	}
 }

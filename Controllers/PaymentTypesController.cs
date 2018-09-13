@@ -128,27 +128,6 @@ namespace BangazonAPI.Controllers
 
         }
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            string sql = $"DELETE p FROM PaymentTypes p WHERE p.Id = {id}";
-
-            using (IDbConnection conn = Connection)
-            {
-                var deletePaymentType = await conn.ExecuteAsync(sql);
-                if (deletePaymentType > 0)
-                {
-                    return new StatusCodeResult(StatusCodes.Status204NoContent);
-                }
-                else
-                {
-                    throw new Exception("No PaymentType Found");
-                }
-            }
-        }
-
-
         private bool PaymentTypeExists(int id)
         {
             string sql = $"SELECT Id, Label FROM PaymentTypes WHERE Id = {id}";

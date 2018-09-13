@@ -128,23 +128,27 @@ namespace BangazonAPI.Models
             }
         }
 
-        // POST /customers
-        //[HttpPost]
-        //public async Task<IActionResult> Post([FromBody] Customer customer)
-        //{
-        //    string sql = $@"INSERT INTO Customer
-        //    ()
-        //    VALUES
-        //    ();
-        //    select MAX(Id) from Customer;";
+        //POST /customers
+       [HttpPost]
+        public async Task<IActionResult> Post([FromBody] Customer customer)
+        {
+            var thisDate = DateTime.Now;
+            customer.JoinDate = thisDate;
+            customer.LastInteractionDate = thisDate;
+            string sql = $@"INSERT INTO Customers
+            (FirstName, LastName, JoinDate, LastInteractionDate)
+            VALUES
+            ('{customer.FirstName}', '{customer.LastName}', '{customer.JoinDate}', '{customer.LastInteractionDate}');
+            select MAX(Id) from Customers;";
 
-        //    using (IDbConnection conn = Connection)
-        //    {
-        //        var customerId = (await conn.QueryAsync<int>(sql)).Single();
-        //        customer.CustomerId = customerId;
-        //        return CreatedAtRoute("GetCustomer", new { id = customerId }, customer);
-        //    }
-        //}
+            Console.WriteLine(sql);
+            using (IDbConnection conn = Connection)
+            {
+                var customerId = (await conn.QueryAsync<int>(sql)).Single();
+                customer.Id = customerId;
+                return CreatedAtRoute("GetCustomer", new { id = customerId }, customer);
+            }
+        }
 
         /*
             PUT /customers/5

@@ -14,16 +14,16 @@ namespace BangazonAPI.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        [DataType(DataType.Date)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        //[DataType(DataType.Date)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime JoinDate { get; set; }
 
-        [DataType(DataType.Date)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        //[DataType(DataType.Date)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime LastInteractionDate { get; set; }
 
         public List<Product> CustomerProductsList { get; set; }
-        public List<Order> CustomerOrdersList { get; set; }
+        //public List<Order> CustomerOrdersList { get; set; }
         public List<CustomerAccount> CustomerAccountsList { get; set; }
 
     }

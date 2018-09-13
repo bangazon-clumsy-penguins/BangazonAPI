@@ -15,11 +15,11 @@ namespace BangazonAPI.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        [DataType(DataType.Date)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime HireDate { get; set; }
 
-        public bool IsSupervisor { get; set; }
+        public DateTime HireDate { get; set; }
+
+        public bool isSupervisor { get; set; }
 
         public int DepartmentId { get; set; }
 

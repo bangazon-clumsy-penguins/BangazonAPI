@@ -7,17 +7,16 @@ using System.Threading.Tasks;
 
 namespace BangazonAPI.Models
 {
-    public class Customer
+    public class Computer
     {
         [Key]
         public int Id { get; set; }
 
-        public string FirstName { get; set; }
+        public string Model { get; set; }
 
-        public string LastName { get; set; }
+        public DateTime PurchaseDate{ get; set; }
 
-        public DateTime JoinDate { get; set; }
+        public DateTime? DecommisionDate { get; set; }
 
-        public DateTime LastInteractionDate { get; set; }
     }
 }

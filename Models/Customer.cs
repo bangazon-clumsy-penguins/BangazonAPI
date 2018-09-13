@@ -11,13 +11,14 @@ namespace BangazonAPI.Models
     {
         [Key]
         public int Id { get; set; }
-
         public string FirstName { get; set; }
-
         public string LastName { get; set; }
-
         public DateTime JoinDate { get; set; }
-
         public DateTime LastInteractionDate { get; set; }
+
+        public List<Product> CustomerProductsList { get; set; }
+        //public List<Order> CustomerOrdersList { get; set; }
+        public List<CustomerAccount> CustomerAccountsList { get; set; }
+
     }
 }

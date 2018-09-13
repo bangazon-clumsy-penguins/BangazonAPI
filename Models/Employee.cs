@@ -14,12 +14,11 @@ namespace BangazonAPI.Models
         public int Id { get; set; }
 
         public string FirstName { get; set; }
-
         public string LastName { get; set; }
 
         public DateTime HireDate { get; set; }
 
-        public bool isSupervisor { get; set; }
+        public bool IsSupervisor { get; set; }
 
         public int DepartmentId { get; set; }
 

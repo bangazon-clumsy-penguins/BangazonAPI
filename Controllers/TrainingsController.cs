@@ -39,10 +39,10 @@ namespace BangazonAPI.Controllers
 		{
 			string sql = "SELECT * FROM Trainings";
 
-			if (completed != null)
+			if (completed == "false")
 			{
 				DateTime today = DateTime.Today;
-				sql += $" WHERE Trainings.EndDate >= {today}";
+				sql += $" WHERE Trainings.EndDate > '{today}'";
 			}
 
 			using (IDbConnection conn = Connection)

@@ -42,7 +42,7 @@ namespace BangazonAPI.Controllers
 			if (completed == "false")
 			{
 				DateTime today = DateTime.Today;
-				sql += $" WHERE Trainings.EndDate > '{today}'";
+				sql += $" WHERE Trainings.EndDate >= '{today}'";
 			}
 
 			using (IDbConnection conn = Connection)
@@ -161,9 +161,5 @@ namespace BangazonAPI.Controllers
 			}
 		}
 
-		private bool TrainingHasEnded(int id)
-		{
-			return false;
-		}
 	}
 }

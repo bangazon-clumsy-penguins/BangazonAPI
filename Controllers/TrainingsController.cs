@@ -77,14 +77,55 @@ namespace BangazonAPI.Controllers
 
 		// PUT: api/Trainings/5
 		[HttpPut("{id}")]
-		public void Put(int id, [FromBody] string value)
+		public async Task<IActionResult> Put([FromRoute] int id, [FromBody] Training training)
 		{
+			string sql = $@"
+			UPDATE Trainings
+			SET Name = '{training.Name}',
+				StartDate = '{training.StartDate}',
+				EndDate = '{training.EndDate}',
+				MaxOccupancy = {training.MaxOccupancy}
+			WHERE Id = {id};
+			";
+
+			try
+			{
+				using (IDbConnection conn = Connection)
+				{
+					int rowsAffected = await conn.ExecuteAsync(sql);
+					if (rowsAffected > 0)
+					{
+						return new StatusCodeResult(StatusCodes.Status204NoContent);
+					}
+					throw new Exception("No rows affected");
+				}
+			}
+			catch (Exception)
+			{
+				if (!TrainingExists(id))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
 		}
 
 		// DELETE: api/ApiWithActions/5
 		[HttpDelete("{id}")]
 		public void Delete(int id)
 		{
+		}
+
+		private bool TrainingExists(int id)
+		{
+			string sql = $"SELECT * FROM Trainings WHERE Id = {id}";
+			using (IDbConnection conn = Connection)
+			{
+				return conn.Query<Training>(sql).Count() > 0;
+			}
 		}
 	}
 }

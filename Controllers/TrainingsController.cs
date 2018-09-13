@@ -119,7 +119,7 @@ namespace BangazonAPI.Controllers
 		{
 			if (TrainingHasStarted(id))
 			{
-				throw new Exception("Cannot delete a training that has started");
+				throw new Exception("Cannot delete a training that has already started");
 			}
 			string sql = $@"DELETE FROM Trainings WHERE Id = {id}";
 

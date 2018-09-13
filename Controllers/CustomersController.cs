@@ -42,9 +42,9 @@ namespace BangazonAPI.Models
 
             if (_include != null && _include.Contains("payments"))
             {
-                sql = $@"SELECT Customers.FirstName, Customers.LastName, PaymentTypes.Label FROM Customers JOIN Orders ON Customers.Id = Orders.CustomerId
+                sql = $@"SELECT * FROM Customers JOIN Orders ON Customers.Id = Orders.CustomerId
                         JOIN CustomerAccounts ON Orders.CustomerAccountId = CustomerAccounts.Id
-                        JOIN PaymentTypes ON CustomerAccounts.PaymentTypeId = PaymentTypes.Id; ";
+                        JOIN PaymentTypes ON PaymentTypes.Id = CustomerAccounts.PaymentTypeId; ";
             }
 
             if (_include != null && _include.Contains("products"))
@@ -65,12 +65,24 @@ namespace BangazonAPI.Models
                 {
                     Dictionary<int, Customer> customerPayments = new Dictionary<int, Customer>();
 
-                    var customersQuery = await conn.QueryAsync<Customer, PaymentType, Customer>(
+                    var customersQuery = await conn.QueryAsync<Customer, Order, CustomerAccount, PaymentType, Customer>(
                         sql,
-                        (customer, paymentType) =>
+                        (customer, order, customerAccount, paymentType) =>
                         {
+                            Customer thisCustomer;
+                            CustomerAccount thisCustomerAccount = customerAccount;
 
-                            return customer;
+                            thisCustomerAccount.PaymentTypeName = $"{paymentType.Label}";
+                            Console.WriteLine($"PaymentType: {paymentType.Label}");
+                            if (!customerPayments.TryGetValue(customer.Id, out thisCustomer))
+                            {
+                                thisCustomer = customer;
+                                thisCustomer.CustomerAccountsList = new List<CustomerAccount>();
+                                customerPayments.Add(thisCustomer.Id, thisCustomer);
+                            }
+
+                            thisCustomer.CustomerAccountsList.Add(customerAccount);
+                            return thisCustomer;
                         }
                     );
                     return Ok(customersQuery);  // Used to be .Values

@@ -23,6 +23,8 @@ namespace BangazonAPI.Models
         public DateTime LastInteractionDate { get; set; }
 
         public List<Product> CustomerProductsList { get; set; }
-        public List<PaymentType> CustomerPaymentsList { get; set; }
+        public List<Order> CustomerOrdersList { get; set; }
+        public List<CustomerAccount> CustomerAccountsList { get; set; }
+
     }
 }

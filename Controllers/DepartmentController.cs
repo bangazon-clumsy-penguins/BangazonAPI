@@ -94,7 +94,7 @@ namespace BangazonAPI.Controllers
                             return departmentEntry;
                         }); 
 
-                    return Ok(customersQuery); //.values?
+                    return Ok(customersQuery.Distinct()); //.values?
                     
                     
 

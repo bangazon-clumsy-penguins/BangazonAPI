@@ -132,7 +132,7 @@ namespace BangazonAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            string sql = $"DELETE FROM PaymentTypes p WHERE p.Id = {id}";
+            string sql = $"DELETE p FROM PaymentTypes p WHERE p.Id = {id}";
 
             using (IDbConnection conn = Connection)
             {

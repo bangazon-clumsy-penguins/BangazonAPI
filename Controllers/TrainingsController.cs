@@ -13,7 +13,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BangazonAPI.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("/[controller]")]
 	[ApiController]
 	public class TrainingsController : ControllerBase
 	{
@@ -33,11 +33,18 @@ namespace BangazonAPI.Controllers
 			}
 		}
 
-		// GET: api/Trainings
+		// GET: api/Trainings?completed=false
 		[HttpGet]
-		public async Task<IActionResult> Get()
+		public async Task<IActionResult> Get([FromQuery] string completed)
 		{
 			string sql = "SELECT * FROM Trainings";
+
+			if (completed != null)
+			{
+				DateTime today = DateTime.Today;
+				sql += $" WHERE Trainings.EndDate >= {today}";
+			}
+
 			using (IDbConnection conn = Connection)
 			{
 				var allTrainings = await conn.QueryAsync<Training>(sql);

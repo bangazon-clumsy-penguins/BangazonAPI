@@ -53,14 +53,14 @@ namespace BangazonAPI.Models
                         JOIN PaymentTypes ON PaymentTypes.Id = CustomerAccounts.PaymentTypeId";
             }
 
-            if (q != null)
-            {
-                sql += ($" AND FirstName LIKE '%{q}%' OR LastName LIKE '%{q}%'");
-            }
-
             if (q != null || _include != null)
             {
                 sql += " WHERE 1=1";
+            }
+
+            if (q != null)
+            {
+                sql += ($" AND FirstName LIKE '%{q}%' OR LastName LIKE '%{q}%'");
             }
 
             Console.WriteLine(sql);

@@ -38,7 +38,9 @@ namespace BangazonAPI.Models
         public async Task<IActionResult> Get()
         {
             string sql = $@"
-                            SELECT *
+                            SELECT e.*
+                                ,d.*
+                                ,c.*
                             FROM Employees e
                             LEFT OUTER JOIN Departments d on d.Id = e.DepartmentId
                             LEFT OUTER JOIN EmployeeComputers ec on ec.EmployeeId = e.Id 
@@ -52,15 +54,13 @@ namespace BangazonAPI.Models
 
                 var EmployeesQuery = await conn.QueryAsync<Employee,
                                                             Department,
-                                                            EmployeeComputer,
                                                             Computer,
                                                             Employee>(
                     sql,
-                    (Employee, Department, EmployeeComputer, Computer) =>
+                    (Employee, Department, Computer) =>
                     {
                         Employee.Department = Department;
-                        Employee.EmployeeComputer = EmployeeComputer;
-                        Employee.EmployeeComputer.Computer = Computer;
+                        Employee.Computer = Computer;
 
                         return Employee;
 
@@ -77,7 +77,9 @@ namespace BangazonAPI.Models
         {
       
             string sql = $@"
-                            SELECT *
+                            SELECT e.*
+                                ,d.*
+                                ,c.*
                             FROM Employees e
                             LEFT OUTER JOIN Departments d on d.Id = e.DepartmentId
                             LEFT OUTER JOIN EmployeeComputers ec on ec.EmployeeId = e.Id 
@@ -89,25 +91,33 @@ namespace BangazonAPI.Models
             using (IDbConnection conn = Connection)
             {
 
-
-                var EmployeesQuery = await conn.QueryAsync<Employee,
+                try
+                {
+                    var EmployeesQuery = await conn.QueryAsync<Employee,
                                                             Department,
-                                                            EmployeeComputer,
                                                             Computer,
                                                             Employee>(
                     sql,
-                    (Employee, Department, EmployeeComputer, Computer) =>
+                    (Employee, Department, Computer) =>
                     {
                         Employee.Department = Department;
-                        Employee.EmployeeComputer = EmployeeComputer;
-                        Employee.EmployeeComputer.Computer = Computer;
+                        Employee.Computer = Computer;
 
                         return Employee;
 
                     }
                 );
 
-                return Ok(EmployeesQuery.Single());  // Used to be .Values 
+                    return Ok(EmployeesQuery.Single());  // Used to be .Values 
+                }
+
+                catch(Exception e)
+                {
+                    Console.WriteLine($@"My error message must by trying to tell me:
+                    {e.Message}");
+                    return NotFound();
+                }
+                
             }
         }
 
@@ -147,64 +157,68 @@ namespace BangazonAPI.Models
         //    differently here to show that the [HttpPut] attribute enforces which
         //    verb is handled.
         // */
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> ChangeEmployee(int id, [FromBody] Employee Employee)
-        //{
-        //    string sql = $@"
-        //    UPDATE Employee
-        //    SET '
-        //    WHERE Id = {id}";
+        [HttpPut("{id}")]
+        public async Task<IActionResult> ChangeEmployee(int id, [FromBody] Employee Employee)
+        {
+            string sql = $@"
+            UPDATE Employees
+            SET FirstName = '{Employee.FirstName}'
+				,LastName = '{Employee.LastName}'
+				,HireDate = '{Employee.HireDate}'
+				,IsSupervisor = {Convert.ToInt32(Employee.isSupervisor)}
+				,DepartmentId = {Employee.DepartmentId}
+            WHERE Id = {id}";
 
-        //    try
-        //    {
-        //        using (IDbConnection conn = Connection)
-        //        {
-        //            int rowsAffected = await conn.ExecuteAsync(sql);
-        //            if (rowsAffected > 0)
-        //            {
-        //                return new StatusCodeResult(StatusCodes.Status204NoContent);
-        //            }
-        //            throw new Exception("No rows affected");
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        if (!EmployeeExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-        //}
+            try
+            {
+                using (IDbConnection conn = Connection)
+                {
+                    int rowsAffected = await conn.ExecuteAsync(sql);
+                    if (rowsAffected > 0)
+                    {
+                        return new StatusCodeResult(StatusCodes.Status204NoContent);
+                    }
+                    throw new Exception("No rows affected");
+                }
+            }
+            catch (Exception)
+            {
+                if (!EmployeeExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
 
-        //// DELETE /Employees/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    string sql = $@"DELETE FROM Employee WHERE Id = {id}";
+        // DELETE /Employees/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            string sql = $@"DELETE FROM Employees WHERE Id = {id}";
 
-        //    using (IDbConnection conn = Connection)
-        //    {
-        //        int rowsAffected = await conn.ExecuteAsync(sql);
-        //        if (rowsAffected > 0)
-        //        {
-        //            return new StatusCodeResult(StatusCodes.Status204NoContent);
-        //        }
-        //        throw new Exception("No rows affected");
-        //    }
+            using (IDbConnection conn = Connection)
+            {
+                int rowsAffected = await conn.ExecuteAsync(sql);
+                if (rowsAffected > 0)
+                {
+                    return new StatusCodeResult(StatusCodes.Status204NoContent);
+                }
+                throw new Exception("No rows affected");
+            }
 
-        //}
+        }
 
-        //private bool EmployeeExists(int id)
-        //{
-        //    string sql = $"SELECT Id, Name, Language FROM Employee WHERE Id = {id}";
-        //    using (IDbConnection conn = Connection)
-        //    {
-        //        return conn.Query<Employee>(sql).Count() > 0;
-        //    }
-        //}
+        private bool EmployeeExists(int id)
+        {
+            string sql = $"SELECT Id, FirstName, LastName, HireDate, IsSupervisor, DepartmentId FROM Employees WHERE Id = {id}";
+            using (IDbConnection conn = Connection)
+            {
+                return conn.Query<Employee>(sql).Count() > 0;
+            }
+        }
     }
 }

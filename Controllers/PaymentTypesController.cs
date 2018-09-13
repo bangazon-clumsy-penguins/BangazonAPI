@@ -66,8 +66,15 @@ namespace BangazonAPI.Controllers
 
             using (IDbConnection conn = Connection)
             {
-                var paymentTypeQuery = await conn.QueryAsync<PaymentType>(sql);
-                return Ok(paymentTypeQuery);
+                try
+                {
+                    var paymentTypeQuery = (await conn.QueryAsync<PaymentType>(sql)).Single();
+                    return Ok(paymentTypeQuery);
+                }
+                catch (InvalidOperationException)
+                {
+                    return new StatusCodeResult(StatusCodes.Status404NotFound);
+                }
             }
             
             

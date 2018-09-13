@@ -111,23 +111,28 @@ namespace BangazonAPI.Models
             }
         }
 
-        //// POST /Employees
-        //[HttpPost]
-        //public async Task<IActionResult> Post([FromBody] Employee Employee)
-        //{
-        //    string sql = $@"INSERT INTO Employee
-        //    ()
-        //    VALUES
-        //    ();
-        //    select MAX(Id) from Employee;";
+        // POST /Employees
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] Employee Employee)
+        {
+            string sql = $@"
+            INSERT INTO Employees (FirstName, LastName, HireDate, IsSupervisor, DepartmentId)
+            VALUES ('{Employee.FirstName}'
+                    ,'{Employee.LastName}'
+                    ,'{Employee.HireDate}'
+                    ,{Convert.ToInt32(Employee.isSupervisor)}
+                    ,{Employee.DepartmentId});
+            select MAX(Id) from Employees;";
 
-        //    using (IDbConnection conn = Connection)
-        //    {
-        //        var EmployeeId = (await conn.QueryAsync<int>(sql)).Single();
-        //        Employee.EmployeeId = EmployeeId;
-        //        return CreatedAtRoute("GetEmployee", new { id = EmployeeId }, Employee);
-        //    }
-        //}
+            Console.WriteLine(sql);
+
+            using (IDbConnection conn = Connection)
+            {
+                var EmployeeId = (await conn.QueryAsync<int>(sql)).Single();
+                Employee.Id = EmployeeId;
+                return CreatedAtRoute("GetEmployee", new { id = EmployeeId }, Employee);
+            }
+        }
 
         ///*
         //    PUT /Employees/5

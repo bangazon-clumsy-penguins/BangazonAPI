@@ -39,24 +39,23 @@ namespace BangazonAPI.Models
         public async Task<IActionResult> Get(string q, string _include)
         {
             string searchQuery = "";
-            string sql = "SELECT * FROM Customers ";
+            string sql = "SELECT * FROM Customers WHERE 1=1";
 
             if (_include != null && _include.Contains("payments"))
             {
                 sql = $@"SELECT * FROM Customers JOIN Orders ON Customers.Id = Orders.CustomerId
                         JOIN CustomerAccounts ON Orders.CustomerAccountId = CustomerAccounts.Id
-                        JOIN PaymentTypes ON PaymentTypes.Id = CustomerAccounts.PaymentTypeId; ";
+                        JOIN PaymentTypes ON PaymentTypes.Id = CustomerAccounts.PaymentTypeId WHERE 1=1";
             }
 
             if (_include != null && _include.Contains("products"))
             {
-                sql = "SELECT * FROM Customers JOIN Products ON Products.CustomerId = Customers.Id";
+                sql = "SELECT * FROM Customers JOIN Products ON Products.CustomerId = Customers.Id WHERE 1=1";
             }
 
             if (q != null)
             {
-                searchQuery = q;
-                sql = ($"SELECT * FROM Customers WHERE FirstName LIKE '%{q}%' OR LastName LIKE '%{q}%'");
+                sql += ($" AND FirstName LIKE '%{q}%' OR LastName LIKE '%{q}%'");
             }
 
             Console.WriteLine(sql);

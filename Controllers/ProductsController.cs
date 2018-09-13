@@ -9,8 +9,16 @@ using Dapper;
 using Microsoft.AspNetCore.Http;
 using System.Data.SqlClient;
 
+/* AUTHOR: Seth Dana
+ * 
+ * 
+ * This is the Products controller for the public facing API. This controller allows full CRUD functionality on the Products table 
+ */
+
 namespace BangazonAPI.Models
 {
+    //Set the ROUTE and set up the private _config file to allow a connection to the database
+
     [Route("[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
@@ -30,7 +38,7 @@ namespace BangazonAPI.Models
             }
         }
 
-        //    GET /Products
+        //GET /Products
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -77,6 +85,8 @@ namespace BangazonAPI.Models
             }
         }
 
+
+        //PUT /Products
         [HttpPut("{id}")]
         public async Task<IActionResult> ChangeProduct(int id, [FromBody] Product product)
         {

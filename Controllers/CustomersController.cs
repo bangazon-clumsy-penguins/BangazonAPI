@@ -9,8 +9,25 @@ using Dapper;
 using Microsoft.AspNetCore.Http;
 using System.Data.SqlClient;
 
+/*AUTHOR: Seth Dana
+ * 
+ * This is the Customers controller for the Bangazon public API. This controller has methods for get, create, and update. 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
 namespace BangazonAPI.Models
 {
+    //Set the route and the private _config variable to connect to the database
+
     [Route("[controller]")]
     [ApiController]
     public class CustomersController : ControllerBase
@@ -34,6 +51,7 @@ namespace BangazonAPI.Models
             GET /Customers?q=test
             GET /Customers?_include=payments
             GET /Customers?_include=products
+            GET /Customers?_include=products,payments
          */
         [HttpGet]
         public async Task<IActionResult> Get(string q, string _include)
@@ -251,6 +269,7 @@ namespace BangazonAPI.Models
 
         //}
 
+        //This method is run when an exception is thrown because nothing has been altered in the database. It checks if a customer exists.
         private bool CustomerExists(int id)
         {
             string sql = $"SELECT Id, FirstName, LastName FROM Customers WHERE Id = {id}";

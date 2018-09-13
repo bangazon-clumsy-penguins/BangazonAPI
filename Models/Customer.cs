@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
+//This class is representative of the Customers table in Bangazon.db
+
 namespace BangazonAPI.Models
 {
     public class Customer

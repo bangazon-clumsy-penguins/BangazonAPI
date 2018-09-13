@@ -96,7 +96,7 @@ namespace BangazonAPI.Controllers
         {
             string sql = $@"
             UPDATE PaymentTypes
-            SET Label = {paymentType.Label}'
+            SET Label = '{paymentType.Label}'
             WHERE Id = {id}";
 
             try

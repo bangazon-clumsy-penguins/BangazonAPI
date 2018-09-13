@@ -14,12 +14,8 @@ namespace BangazonAPI.Models
 
         public string Model { get; set; }
 
-        [DataType(DataType.Date)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime PurchaseDate{ get; set; }
 
-        [DataType(DataType.Date)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? DecommisionDate { get; set; }
 
     }

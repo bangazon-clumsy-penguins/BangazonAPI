@@ -16,12 +16,8 @@ namespace BangazonAPI.Models
 
         public string LastName { get; set; }
 
-        [DataType(DataType.Date)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime JoinDate { get; set; }
 
-        [DataType(DataType.Date)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime LastInteractionDate { get; set; }
     }
 }

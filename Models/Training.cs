@@ -14,12 +14,8 @@ namespace BangazonAPI.Models
 
         public string Name { get; set; }
 
-        [DataType(DataType.Date)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime StartDate { get; set; }
 
-        [DataType(DataType.Date)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime EndDate { get; set; }
 
         public int MaxOccupancy { get; set; }

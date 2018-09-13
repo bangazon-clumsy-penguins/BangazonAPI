@@ -13,15 +13,13 @@ namespace BangazonAPI.Models
         [Key]
         public int Id { get; set; }
 
-        [DataType(DataType.Date)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+
         public DateTime AssignmentDate { get; set; }
 
-        [DataType(DataType.Date)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? ReturnDate { get; set; }
 
         public int EmployeeId { get; set; }
+
         public int ComputerId { get; set; }
 
     }

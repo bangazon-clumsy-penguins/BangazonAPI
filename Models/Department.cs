@@ -12,7 +12,7 @@ namespace BangazonAPI.Models
         public int Id { get; set; }
 
         public string Name { get; set; }
-        public float Budget { get; set; }
+        public double Budget { get; set; }
 
         public List<Employee> EmployeeList { get; set; }
     }

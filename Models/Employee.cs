@@ -15,9 +15,7 @@ namespace BangazonAPI.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        public DateTime HireDate { get; set; }
-
-        public DateTime HireDate { get; set; }
+       public DateTime HireDate { get; set; }
 
         public bool isSupervisor { get; set; }
 

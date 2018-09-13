@@ -46,7 +46,7 @@ namespace BangazonAPI.Controllers
 		}
 
 		// GET: api/Trainings/5
-		[HttpGet("{id}", Name = "Get")]
+		[HttpGet("{id}", Name = "GetSingleTraining")]
 		public async Task<IActionResult> Get([FromRoute] int id)
 		{
 			string sql = $"SELECT * FROM Trainings WHERE Id = {id}";
@@ -59,8 +59,20 @@ namespace BangazonAPI.Controllers
 
 		// POST: api/Trainings
 		[HttpPost]
-		public void Post([FromBody] string value)
+		public async Task<IActionResult> Post([FromBody] Training training)
 		{
+			string sql = $@"
+			INSERT INTO Trainings (Name, StartDate, EndDate, MaxOccupancy)
+			VALUES ('{training.Name}', '{training.StartDate}', '{training.EndDate}', {training.MaxOccupancy});
+            SELECT MAX(Id) from Trainings;
+			";
+
+			using (IDbConnection conn = Connection)
+			{
+				var trainingId = (await conn.QueryAsync<int>(sql)).Single();
+				training.Id = trainingId;
+				return CreatedAtRoute("GetSingleTraining", new { id = trainingId }, training);
+			}
 		}
 
 		// PUT: api/Trainings/5

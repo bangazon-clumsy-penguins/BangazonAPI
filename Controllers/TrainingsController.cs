@@ -115,8 +115,19 @@ namespace BangazonAPI.Controllers
 
 		// DELETE: api/ApiWithActions/5
 		[HttpDelete("{id}")]
-		public void Delete(int id)
+		public async Task<IActionResult> Delete(int id)
 		{
+			string sql = $@"DELETE FROM Exercise WHERE Id = {id}";
+
+			using (IDbConnection conn = Connection)
+			{
+				int rowsAffected = await conn.ExecuteAsync(sql);
+				if (rowsAffected > 0)
+				{
+					return new StatusCodeResult(StatusCodes.Status204NoContent);
+				}
+				throw new Exception("No rows affected");
+			}
 		}
 
 		private bool TrainingExists(int id)

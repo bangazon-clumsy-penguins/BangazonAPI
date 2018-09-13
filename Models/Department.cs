@@ -9,9 +9,11 @@ namespace BangazonAPI.Models
     public class Department
     {
         [Key]
-        public int DepartmentId { get; set; }
+        public int Id { get; set; }
 
         public string Name { get; set; }
         public float Budget { get; set; }
+
+        public List<Employee> EmployeeList { get; set; }
     }
 }

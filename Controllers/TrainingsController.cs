@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -36,20 +37,24 @@ namespace BangazonAPI.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Get()
 		{
+			string sql = "SELECT * FROM Trainings";
 			using (IDbConnection conn = Connection)
 			{
-				string sql = "SELECT * FROM Trainings";
-
-				var fullExercises = await conn.QueryAsync<Training>(sql);
-				return Ok(fullExercises);
+				var allTrainings = await conn.QueryAsync<Training>(sql);
+				return Ok(allTrainings);
 			}
 		}
 
 		// GET: api/Trainings/5
 		[HttpGet("{id}", Name = "Get")]
-		public string Get(int id)
+		public async Task<IActionResult> Get([FromRoute] int id)
 		{
-			return "value";
+			string sql = $"SELECT * FROM Trainings WHERE Id = {id}";
+			using (IDbConnection conn = Connection)
+			{
+				Training singleTraining = (await conn.QueryAsync<Training>(sql)).Single();
+				return Ok(singleTraining);
+			}
 		}
 
 		// POST: api/Trainings

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace BangazonAPI.Controllers
 {
@@ -11,11 +14,30 @@ namespace BangazonAPI.Controllers
     [ApiController]
     public class TrainingsController : ControllerBase
     {
+
+        private readonly IConfiguration _config;
+
+        public TrainingsController(IConfiguration config)
+        {
+            _config = config;
+        }
+
+        public IDbConnection Connection
+        {
+            get
+            {
+                return new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+            }
+        }
+
         // GET: api/Trainings
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get()
         {
-            return new string[] { "value1", "value2" };
+
+
+
+            return Ok(Trainings);
         }
 
         // GET: api/Trainings/5

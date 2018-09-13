@@ -75,7 +75,7 @@ namespace BangazonAPI.Controllers
 
         // POST: api/PaymentType
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] PaymentType paymentType)
+        public async Task<IActionResult> Post([FromBody] PaymentType paymentType)
         {
             string sql = $@"INSERT INTO PaymentTypes (Type)
             VALUES ({paymentType.Label});
@@ -84,7 +84,7 @@ namespace BangazonAPI.Controllers
             using (IDbConnection conn = Connection)
             {
                 var createPaymentType = (await conn.QueryAsync<int>(sql)).Single();
-                paymentType.PaymentTypeId = createPaymentType;
+                paymentType.Id = createPaymentType;
                 return CreatedAtRoute("GetPaymentType", new { id = createPaymentType }, paymentType);
             }
 

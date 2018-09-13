@@ -9,7 +9,7 @@ namespace BangazonAPI.Models
     public class PaymentType
     {
         [Key]
-        public int PaymentTypeId { get; set; }
+        public int Id { get; set; }
         public string Label { get; set; }
     }
 }

@@ -166,9 +166,10 @@ namespace BangazonAPI.Models
         [HttpPut("{id}")]
         public async Task<IActionResult> ChangeCustomer(int id, [FromBody] Customer customer)
         {
+            customer.LastInteractionDate = DateTime.Now;
             string sql = $@"
-            UPDATE Customer
-            SET '
+            UPDATE Customers
+            SET FirstName = '{customer.FirstName}', LastName = '{customer.LastName}', LastInteractionDate = '{customer.LastInteractionDate}'
             WHERE Id = {id}";
 
             try
@@ -200,7 +201,7 @@ namespace BangazonAPI.Models
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            string sql = $@"DELETE FROM Customer WHERE Id = {id}";
+            string sql = $@"DELETE FROM Customers WHERE Id = {id}";
 
             using (IDbConnection conn = Connection)
             {
@@ -216,7 +217,7 @@ namespace BangazonAPI.Models
 
         private bool CustomerExists(int id)
         {
-            string sql = $"SELECT Id, Name, Language FROM Customer WHERE Id = {id}";
+            string sql = $"SELECT Id, FirstName, LastName FROM Customers WHERE Id = {id}";
             using (IDbConnection conn = Connection)
             {
                 return conn.Query<Customer>(sql).Count() > 0;

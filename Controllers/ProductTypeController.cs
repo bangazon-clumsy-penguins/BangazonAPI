@@ -36,17 +36,12 @@ namespace BangazonAPI.Models
          */
 
         [HttpGet]
-        public async Task<IActionResult> Get(string label)
+        public async Task<IActionResult> Get()
         {
                 
             using (IDbConnection conn = Connection)
             {
                 string sql = "SELECT * FROM ProductTypes";
-
-                if (label != null)
-                {
-                    sql += $" WHERE Label='{label}'";
-                }
 
                 var productTypes = await conn.QueryAsync<ProductType>(sql);
                 return Ok(productTypes);
@@ -58,13 +53,24 @@ namespace BangazonAPI.Models
         [HttpGet("{id}", Name = "GetProductType")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
-            using (IDbConnection conn = Connection)
+            try
             {
-                string sql = $"SELECT * FROM ProductTypes WHERE Id = {id}";
+                using (IDbConnection conn = Connection)
+                {
+                    string sql = $"SELECT * FROM ProductTypes WHERE Id = {id}";
 
-                var singleProductType = (await conn.QueryAsync<ProductType>(sql)).Single();
-                return Ok(singleProductType);
+                    var singleProductType = (await conn.QueryAsync<ProductType>(sql)).Single();
+                    return Ok(singleProductType);
+                }
             }
+
+            catch(Exception e)
+            {
+                Console.WriteLine($@"ProductType Get ERROR:
+                                    {e.Message}");
+                return NotFound();
+            }
+            
         }
 
         // POST /ProductTypes
@@ -85,19 +91,6 @@ namespace BangazonAPI.Models
             }
         }
 
-        /*
-            PUT /ProductTypes/5
-
-            The [HttpPut] attribute ensures that this method will handle any
-            request to a `/ProductTypes/{id}` with the PUT HTTP verb. Alternatively,
-            I could name this method `PutProductType`, or just `Put` and ASP.NET
-            will detect that the word `Put` is in the method name and ensure
-            that it will only be invoke for PUT operations.
-
-            All other controllers have this method named as `Put`. It's named
-            differently here to show that the [HttpPut] attribute enforces which
-            verb is handled.
-         */
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] ProductType ProductType)
         {

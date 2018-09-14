@@ -1,21 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace BangazonAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        // GET: api/Orders
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IConfiguration _config;
+
+        public OrdersController(IConfiguration config)
         {
-            return new string[] { "value1", "value2" };
+            _config = config;
+        }
+
+        public IDbConnection Connection
+        {
+            get
+            {
+                return new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+            }
+        }
+
+        // GET: /Orders
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            return Ok();
         }
 
         // GET: api/Orders/5

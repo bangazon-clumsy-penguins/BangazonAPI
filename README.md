@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Building the Bangazon Platform API
 
 Welcome, new Bangazonians!
@@ -39,7 +39,43 @@ If your database needs to be changed in any way, or you wish to add items to be 
 
 Now it's time to build the controllers that handle GET, POST, PUT, and DELETE operations on each resource. Make sure you read, and understand, the requirements in the issue tickets to you can use your ORM and SQL to return the correct data structure to client requests.
 
-=======
 # BangazonAPI
 Repo for first Bangazon sprint
->>>>>>> 4f1266baf7fbe58ede722502150092a598f82d64
+
+### 1. Trainings Controller
+
+Endpoint: [localhost:5000/Trainings](http://localhost:5000/Trainings)
+
+Sample Training object:
+````JSON
+{
+	"registeredEmployees": [
+		{Employee1},
+		{Employee2},
+		{...}
+	],
+	"id": 1,
+	"name": "Very Important Training",
+	"startDate": "2018-09-14T00:00:00",
+	"endDate": "2018-09-21T00:00:00",
+	"maxOccupancy": 5
+}
+````
+
+**GET**
+
+Usage:
+
+/Trainings - returns an array of all Training objects, with all the employees registered for each training included as an array
+
+/Trainings?completed=false returns an array of Trainings objects with "endDate" properties of the current day or later
+
+/Trainings/{Id} returns a single Training object with the "id" property equal to the {Id} parameter that was passed.
+
+**POST**
+
+
+
+**PUT**
+
+**DELETE**

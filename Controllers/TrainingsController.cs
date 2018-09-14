@@ -184,7 +184,7 @@ namespace BangazonAPI.Controllers
 		}
 
 		// DELETE: api/ApiWithActions/5
-		[HttpDelete("{id}")]
+		[HttpDelete("{id}")] 
 		public async Task<IActionResult> Delete(int id)
 		{
 			if (TrainingHasStarted(id))

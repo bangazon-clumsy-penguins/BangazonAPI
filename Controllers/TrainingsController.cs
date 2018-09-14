@@ -83,13 +83,26 @@ namespace BangazonAPI.Controllers
 				FROM Trainings t
 				JOIN EmployeeTrainings et ON t.Id = et.TrainingId
 				JOIN Employees e ON et.EmployeeId = e.Id
-			WHERE Id = {id}
+			WHERE t.Id = {id}
 			";
 
 			using (IDbConnection conn = Connection)
 			{
-				Training singleTraining = (await conn.QueryAsync<Training>(sql)).Single();
-				return Ok(singleTraining);
+				Dictionary<int, Training> trainingDictionary = new Dictionary<int, Training>();
+				var singleTraining = await conn.QueryAsync<Training, Employee, Training>(sql,
+					(training, employee) =>
+					{
+
+						if (!(trainingDictionary.ContainsKey(training.Id)))
+						{
+							trainingDictionary[training.Id] = training;
+						}
+						trainingDictionary[training.Id].RegisteredEmployees.Add(employee);
+
+						return trainingDictionary[training.Id];
+					});
+
+				return Ok(singleTraining.Distinct());
 			}
 		}
 

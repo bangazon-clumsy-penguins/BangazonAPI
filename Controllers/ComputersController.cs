@@ -8,6 +8,8 @@ using Dapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+// Author: Evan Lusky
+// Exposes Computers to users.
 
 namespace BangazonAPI.Models
 {
@@ -31,6 +33,7 @@ namespace BangazonAPI.Models
         }
 
         //    GET /Computers
+        // Returns full list of Computers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -46,6 +49,8 @@ namespace BangazonAPI.Models
         }
 
         // GET /Computers/5
+        // id comes from url
+        // Returns a single Computer object
         [HttpGet("{id}", Name = "GetComputers")]
         public async Task<IActionResult> Get([FromRoute]int id)
         {
@@ -59,6 +64,8 @@ namespace BangazonAPI.Models
         }
 
         //POST /Computers
+        // computer comes from body of JSON
+        // Returns the object that was created
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Computer computer)
         {
@@ -77,6 +84,9 @@ namespace BangazonAPI.Models
             }
         }
 
+        // PUT api/values/5
+        // id comes from url of api call and determines which department will be replaced
+        // department comes from the body of the call
         [HttpPut("{id}")]
         public async Task<IActionResult> ChangeProduct(int id, [FromBody] Computer computer)
         {
@@ -111,6 +121,8 @@ namespace BangazonAPI.Models
         }
 
         // DELETE /Computers/5
+        // id comes from url
+        // Deletes Computer 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

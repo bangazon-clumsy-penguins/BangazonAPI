@@ -63,9 +63,9 @@ namespace BangazonAPI.Models
         public async Task<IActionResult> Post([FromBody] Computer computer)
         {
             string sql = $@"INSERT INTO Computers
-            (Model, PurchaseDate, DecomissionDate)
+            (Model, PurchaseDate, DecommissionDate)
             VALUES
-            ('{computer.Model}', '{computer.PurchaseDate}', '{computer.DecommisionDate}');
+            ('{computer.Model}', '{computer.PurchaseDate}', '{computer.DecommissionDate}');
             select MAX(Id) from Computers;";
 
             Console.WriteLine(sql);
@@ -82,7 +82,7 @@ namespace BangazonAPI.Models
         {
             string sql = $@"
             UPDATE Computers
-            SET Model = '{computer.Model}', PurchaseDate = '{computer.PurchaseDate}', DecomissionDate = '{computer.DecommisionDate}' 
+            SET Model = '{computer.Model}', PurchaseDate = '{computer.PurchaseDate}', DecommissionDate = '{computer.DecommissionDate}' 
             WHERE Id = {id}";
 
             try

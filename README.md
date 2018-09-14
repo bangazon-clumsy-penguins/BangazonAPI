@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Building the Bangazon Platform API
 
 Welcome, new Bangazonians!

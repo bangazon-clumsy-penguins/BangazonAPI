@@ -55,7 +55,7 @@ namespace BangazonAPI.Controllers
 			using (IDbConnection conn = Connection)
 			{
 				Dictionary<int, Training> trainingDictionary = new Dictionary<int, Training>();
-				var allTrainings = await conn.QueryAsync<Training, Employee, Training>(sql,
+				var apiResponse = await conn.QueryAsync<Training, Employee, Training>(sql,
 					(training, employee) =>
 					{
 
@@ -68,7 +68,9 @@ namespace BangazonAPI.Controllers
 						return trainingDictionary[training.Id];
 					});
 
-				return Ok(allTrainings.Distinct());
+				List<Training> allTrainings = apiResponse.Distinct().ToList();
+
+				return Ok(allTrainings);
 			}
 		}
 
@@ -89,10 +91,10 @@ namespace BangazonAPI.Controllers
 			using (IDbConnection conn = Connection)
 			{
 				Dictionary<int, Training> trainingDictionary = new Dictionary<int, Training>();
-				var singleTraining = await conn.QueryAsync<Training, Employee, Training>(sql,
+
+				var apiResponse = await conn.QueryAsync<Training, Employee, Training>(sql,
 					(training, employee) =>
 					{
-
 						if (!(trainingDictionary.ContainsKey(training.Id)))
 						{
 							trainingDictionary[training.Id] = training;
@@ -101,9 +103,10 @@ namespace BangazonAPI.Controllers
 
 						return trainingDictionary[training.Id];
 					});
-				Training result = singleTraining.Distinct().Single();
 
-				return Ok(result);
+				Training singleTraining = apiResponse.Distinct().Single();
+
+				return Ok(singleTraining);
 			}
 		}
 

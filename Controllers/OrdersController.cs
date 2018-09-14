@@ -4,6 +4,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using BangazonAPI.Models;
+using Dapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -33,14 +35,26 @@ namespace BangazonAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok();
+            string sql = "SELECT * FROM Orders";
+
+            using (IDbConnection conn = Connection)
+            {
+                var orders = await conn.QueryAsync<Order>(sql);
+                return Ok(orders);
+            }
         }
 
         // GET: api/Orders/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        [HttpGet("{id}", Name = "GetSingleOrder")]
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            string sql = $"SELECT * FROM Orders o WHERE o.Id = {id}";
+
+            using (IDbConnection conn = Connection)
+            {
+                var singleOrder = (await conn.QueryAsync<Order>(sql)).Single();
+                return Ok(singleOrder);
+            }
         }
 
         // POST: api/Orders

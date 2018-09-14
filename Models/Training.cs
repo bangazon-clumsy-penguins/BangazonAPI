@@ -7,17 +7,19 @@ using System.Threading.Tasks;
 
 namespace BangazonAPI.Models
 {
-    public class Training
-    {
-        [Key]
-        public int Id { get; set; }
+	public class Training
+	{
+		[Key]
+		public int Id { get; set; }
 
-        public string Name { get; set; }
+		public string Name { get; set; }
 
-        public DateTime StartDate { get; set; }
+		public DateTime StartDate { get; set; }
 
-        public DateTime EndDate { get; set; }
+		public DateTime EndDate { get; set; }
 
-        public int MaxOccupancy { get; set; }
+		public int MaxOccupancy { get; set; }
+
+		public List<Employee> RegisteredEmployees = new List<Employee>();
     }
 }

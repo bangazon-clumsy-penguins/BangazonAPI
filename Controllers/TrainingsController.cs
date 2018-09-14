@@ -121,6 +121,11 @@ namespace BangazonAPI.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Post([FromBody] Training training)
 		{
+			if (training.MaxOccupancy <= 0)
+			{
+				throw new Exception("The property 'MaxOccupancy' must be greater than 0; cannot create a training with zero or negative occupants");
+			}
+
 			string sql = $@"
 			INSERT INTO Trainings (Name, StartDate, EndDate, MaxOccupancy)
 			VALUES ('{training.Name}', '{training.StartDate}', '{training.EndDate}', {training.MaxOccupancy});
@@ -139,6 +144,11 @@ namespace BangazonAPI.Controllers
 		[HttpPut("{id}")]
 		public async Task<IActionResult> Put([FromRoute] int id, [FromBody] Training training)
 		{
+			if (training.MaxOccupancy <= 0)
+			{
+				throw new Exception("The property 'MaxOccupancy' must be greater than 0; cannot create a training with zero or negative occupants");
+			}
+
 			string sql = $@"
 			UPDATE Trainings
 			SET Name = '{training.Name}',
@@ -179,7 +189,7 @@ namespace BangazonAPI.Controllers
 		{
 			if (TrainingHasStarted(id))
 			{
-				throw new Exception("Cannot delete a training that has already started");
+				throw new Exception("The property 'StartDate' must be in the future; cannot delete a training that has already started");
 			}
 			string sql = $@"DELETE FROM Trainings WHERE Id = {id}";
 

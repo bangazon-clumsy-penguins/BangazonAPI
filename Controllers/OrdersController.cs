@@ -44,7 +44,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // GET: api/Orders/5
+        // GET: /Orders/5
         [HttpGet("{id}", Name = "GetSingleOrder")]
         public async Task<IActionResult> Get(int id)
         {
@@ -57,22 +57,77 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // POST: api/Orders
+        // POST: /Orders
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] Order order)
         {
+            string sql = $@"INSERT INTO Orders
+            (CustomerId, CustomerAccountId)
+            VALUES
+            ('{order.CustomerId}', '{order.CustomerAccountId}');
+            select MAX(Id) from Orders;";
+
+            using (IDbConnection conn = Connection)
+            {
+                var createdOrder = (await conn.QueryAsync<int>(sql)).Single();
+                order.Id = createdOrder;
+                return CreatedAtRoute("GetSingleOrder", new { id = createdOrder }, order);
+            }
         }
 
-        // PUT: api/Orders/5
+        // PUT: /Orders/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] Order order)
         {
+            string sql = $@"
+            UPDATE Orders
+            SET 
+                CustomerId = {order.CustomerId}, 
+                CustomerAccountId = {order.CustomerAccountId}
+            WHERE Id = {id};";
+
+            using (IDbConnection conn = Connection)
+            {
+                int rows = await conn.ExecuteAsync(sql);
+                if (rows > 0)
+                {
+                    return new StatusCodeResult(StatusCodes.Status204NoContent);
+                }
+                throw new Exception("No rows affected");
+            }
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
+            string sql = $@"
+                DELETE op
+                FROM OrderedProducts op
+                WHERE op.OrderId = {id};
+
+                DELETE o
+                FROM Orders o
+                WHERE o.Id = {id};";
+
+            using (IDbConnection conn = Connection)
+            {
+                int deleteOrdersAndOrderedProducts = await conn.ExecuteAsync(sql);
+                if (deleteOrdersAndOrderedProducts > 0)
+                {
+                    return new StatusCodeResult(StatusCodes.Status204NoContent);
+                }
+                throw new Exception("No rows affected");
+            }
+        }
+
+        private bool OrderExists(int id)
+        {
+            string sql = $"SELECT * FROM Orders WHERE Id = {id}";
+            using (IDbConnection conn = Connection)
+            {
+                return conn.Query<Order>(sql).Count() > 0;
+            }
         }
     }
 }

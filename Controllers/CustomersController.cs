@@ -52,6 +52,7 @@ namespace BangazonAPI.Models
             GET /Customers?_include=payments
             GET /Customers?_include=products
             GET /Customers?_include=products,payments
+            q is for a string query of customers first or last name, _include joins payments or products, or both onto customer. 
          */
         [HttpGet]
         public async Task<IActionResult> Get(string q, string _include)
@@ -170,6 +171,8 @@ namespace BangazonAPI.Models
         }
 
         // GET /Customers/5
+        //Get a single customer
+        //Customer Id must be passed from the url
         [HttpGet("{id}", Name = "GetCustomer")]
         public async Task<IActionResult> Get([FromRoute]int id)
         {
@@ -177,12 +180,22 @@ namespace BangazonAPI.Models
 
             using (IDbConnection conn = Connection)
             {
+                try
+                {
                 Customer customers = (await conn.QueryAsync<Customer>(sql)).Single();
                 return Ok(customers);
+                }
+
+                catch (InvalidOperationException)
+                {
+                    return new StatusCodeResult(StatusCodes.Status404NotFound);
+                }
             }
         }
 
         //POST /customers
+        //Post a customer object
+        //Must match Customer model. FirstName, LastName, JoinDate, and LastInteractionDate must be passed.
        [HttpPost]
         public async Task<IActionResult> Post([FromBody] Customer customer)
         {
@@ -206,16 +219,7 @@ namespace BangazonAPI.Models
 
         /*
             PUT /customers/5
-
-            The [HttpPut] attribute ensures that this method will handle any
-            request to a `/customers/{id}` with the PUT HTTP verb. Alternatively,
-            I could name this method `PutCustomer`, or just `Put` and ASP.NET
-            will detect that the word `Put` is in the method name and ensure
-            that it will only be invoke for PUT operations.
-
-            All other controllers have this method named as `Put`. It's named
-            differently here to show that the [HttpPut] attribute enforces which
-            verb is handled.
+            Must match Customer model. FirstName, LastName, and LastInteractionDate are required params.
          */
         [HttpPut("{id}")]
         public async Task<IActionResult> ChangeCustomer(int id, [FromBody] Customer customer)
@@ -250,6 +254,12 @@ namespace BangazonAPI.Models
                 }
             }
         }
+
+        /*Leaving this code in for the future possibility of wanting to delete a customer.
+         * 
+         * 
+         * 
+         **/
 
         // DELETE /customers/5
         //[HttpDelete("{id}")]

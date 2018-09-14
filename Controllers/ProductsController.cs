@@ -39,6 +39,7 @@ namespace BangazonAPI.Models
         }
 
         //GET /Products
+        //Returns all products
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -54,6 +55,7 @@ namespace BangazonAPI.Models
         }
 
         // GET /Products/5
+        //Returns a single product matching the Id passed in the URL
         [HttpGet("{id}", Name = "GetProducts")]
         public async Task<IActionResult> Get([FromRoute]int id)
         {
@@ -61,12 +63,22 @@ namespace BangazonAPI.Models
 
             using (IDbConnection conn = Connection)
             {
-                IEnumerable<Product> product = await conn.QueryAsync<Product>(sql);
+                try
+                {
+                Product product = (await conn.QueryAsync<Product>(sql)).Single();
                 return Ok(product);
+                }
+
+                catch (InvalidOperationException)
+                {
+                    return new StatusCodeResult(StatusCodes.Status404NotFound);
+                }
             }
         }
 
         //POST /Products
+        //Post a product to DB.
+        //Must match Product model. Title, Description, Quantity, Price, ProductTypeId, and CustomerId are required params.
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Product product)
         {
@@ -87,6 +99,8 @@ namespace BangazonAPI.Models
 
 
         //PUT /Products
+        //Edit Product
+        //Must match Product model. Title, Description, Quantity, Price, ProductTypeId, and CustomerId are required params.
         [HttpPut("{id}")]
         public async Task<IActionResult> ChangeProduct(int id, [FromBody] Product product)
         {
@@ -121,6 +135,7 @@ namespace BangazonAPI.Models
         }
 
        // DELETE /Products/5
+       //Deletes product matching product Id passed in URL
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

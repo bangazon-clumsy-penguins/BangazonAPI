@@ -10,6 +10,19 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
+
+/*
+ AUTHORED BY: ADAM WIECKERT
+ 
+ Purpose: To allow developers access to the PaymentTypes table in the BangazonAPI DB. Developers should be able to,
+ GET all of the payment tpyes
+ GET one payment type
+ POST (Create) a payment type in the PaymentTypes table
+ PUT (Update) a payment type in the PaymentTypes table
+
+ Deletion of a payment type is not allowed
+*/
+
 namespace BangazonAPI.Controllers
 {
     [Route("[controller]")]
@@ -32,7 +45,8 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // GET: api/PaymentType
+        // GET: /PaymentType
+        // Will return all PaymentTypes in an array
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -46,7 +60,9 @@ namespace BangazonAPI.Controllers
             
         }
 
-        // GET: api/PaymentType/5
+        // GET: /PaymentType/5
+        // Will return an individual payment type as an object
+        // The parameter of "id" received from the end of the route
         [HttpGet("{id}", Name = "GetPaymentType")]
         public async Task<IActionResult> Get(int id)
         {
@@ -80,7 +96,11 @@ namespace BangazonAPI.Controllers
             
         }
 
-        // POST: api/PaymentType
+        // POST: /PaymentType
+        // Creates a new payment type in the paymentTypes table
+        // the parameter paymentType is of Class PaymentType and must be supplied in the body of the POST request
+        // Label as a string is the only required property in the PaymentType
+        // On successful POST the new Payment Type is returned as well as the route to the new Payment Type
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] PaymentType paymentType)
         {
@@ -97,7 +117,10 @@ namespace BangazonAPI.Controllers
 
         }
 
-        // PUT: api/PaymentType/5
+        // PUT: /PaymentType/5
+        // Parameter of "id" is supplied at the end of the route and "paymentType" within the body of the PUT request
+        // paymentType requires a Label property
+        // On successful update nothing is returned
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] PaymentType paymentType)
         {
@@ -121,6 +144,8 @@ namespace BangazonAPI.Controllers
                     }
                 }
             }
+            // If an item fails to update and an exception is thrown, if the item does exist, throw the exception, 
+            // if item doesn't exist return not found.
             catch (Exception)
             {
                 if (!PaymentTypeExists(id))

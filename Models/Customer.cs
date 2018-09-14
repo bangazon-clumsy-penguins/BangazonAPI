@@ -9,6 +9,11 @@ namespace BangazonAPI.Models
 {
     public class Customer
     {
+        /* 
+         AUTHORED: Adam Wieckert, Seth Dana, Elliot Huck, Evan Lusky, Phil Patton
+
+         PURPOSE: Model to reflect the items on the Customers Table in the BangazonAPI DB
+        */
         [Key]
         public int Id { get; set; }
         public string FirstName { get; set; }

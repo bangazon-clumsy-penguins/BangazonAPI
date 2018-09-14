@@ -43,3 +43,22 @@ Now it's time to build the controllers that handle GET, POST, PUT, and DELETE op
 # BangazonAPI
 Repo for first Bangazon sprint
 >>>>>>> 4f1266baf7fbe58ede722502150092a598f82d64
+
+#### Employees
+
+### Get Employees
+
+What things you need to install the software and how to install them
+
+```
+Give examples
+```
+
+### Get Single Employee
+
+What things you need to install the software and how to install them
+
+```
+Give examples
+```
+

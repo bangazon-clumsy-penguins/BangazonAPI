@@ -101,8 +101,9 @@ namespace BangazonAPI.Controllers
 
 						return trainingDictionary[training.Id];
 					});
+				Training result = singleTraining.Distinct().Single();
 
-				return Ok(singleTraining.Distinct());
+				return Ok(result);
 			}
 		}
 

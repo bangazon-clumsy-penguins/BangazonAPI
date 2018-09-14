@@ -40,7 +40,7 @@ If your database needs to be changed in any way, or you wish to add items to be 
 Now it's time to build the controllers that handle GET, POST, PUT, and DELETE operations on each resource. Make sure you read, and understand, the requirements in the issue tickets to you can use your ORM and SQL to return the correct data structure to client requests.
 
 ### 1. Customers Controller
-**Get**
+**GET**
 
 Endpoint: [localhost:5000/Customers](http://localhost:5000/Customers)
 
@@ -52,7 +52,7 @@ Usage:
 
 /Customers/{Id} returns a single object matching the Id
 
-**Post**
+**POST**
 
 Must match Customer model. FirstName, LastName, JoinDate, and LastInteractionDate must be passed.
 
@@ -80,14 +80,14 @@ Must match Customer model. FirstName, LastName, and LastInteractionDate are requ
 }
 ```
 
-**Delete**
+**DELETE**
 
 Usage: /Customers/{Id}
 
 Delete a customer matching the supplied Id
 
 ### 2. Products Controller
-**Get**
+**GET**
 
 Endpoint: [localhost:5000/Products](http://localhost:5000/Products)
 
@@ -99,7 +99,7 @@ returns an array of objects
 
 /Products/{Id} returns a single object matching the Id
 
-**Post**
+**POST**
 
 Must match Product model. Title, Description, Quantity, Price, ProductTypeId, and CustomerId are required params.
 
@@ -132,7 +132,7 @@ Must match Product model. Title, Description, Quantity, Price, ProductTypeId, an
 }
 ```
 
-**Delete**
+**DELETE**
 
 Usage: /Products/{Id}
 

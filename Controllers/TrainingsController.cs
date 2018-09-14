@@ -54,9 +54,21 @@ namespace BangazonAPI.Controllers
 
 			using (IDbConnection conn = Connection)
 			{
-				var allTrainings = await conn.QueryAsync<Training>(sql);
+				Dictionary<int, Training> trainingDictionary = new Dictionary<int, Training>();
+				var allTrainings = await conn.QueryAsync<Training, Employee, Training>(sql,
+					(training, employee) =>
+					{
 
-				return Ok(allTrainings);
+						if (!(trainingDictionary.ContainsKey(training.Id)))
+						{
+							trainingDictionary[training.Id] = training;
+						}
+						trainingDictionary[training.Id].RegisteredEmployees.Add(employee);
+
+						return trainingDictionary[training.Id];
+					});
+
+				return Ok(allTrainings.Distinct());
 			}
 		}
 

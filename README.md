@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Building the Bangazon Platform API
 
 Welcome, new Bangazonians!
@@ -39,7 +38,87 @@ If your database needs to be changed in any way, or you wish to add items to be 
 
 Now it's time to build the controllers that handle GET, POST, PUT, and DELETE operations on each resource. Make sure you read, and understand, the requirements in the issue tickets to you can use your ORM and SQL to return the correct data structure to client requests.
 
-=======
 # BangazonAPI
+
 Repo for first Bangazon sprint
->>>>>>> 4f1266baf7fbe58ede722502150092a598f82d64
+
+## Product Types
+
+### Get All Product Types:
+
+To get all product types, make a GET request to URL:
+
+```
+http://localhost:5000/ProductTypes
+```
+
+Returned will be an array of:
+
+```JSON
+[
+    {
+        "id": 1,
+        "label": "Balls"
+    }
+]
+```
+
+### Get Single Product Type:
+
+To get a single employee, add a /{id} to the GET request URL:
+
+```
+http://localhost:5000/ProductTypes/7
+```
+
+Returned will be a single Product Type:
+
+```JSON
+{
+    "id": 1,
+    "label": "Balls"
+}
+```
+
+### Add Product Type:
+
+To add a new product type, make a POST request to URL:
+
+```
+http://localhost:5000/ProductTypes
+```
+
+With a request body in the form:
+
+```JSON
+{
+    "label": "Balls"
+}
+```
+
+### Update Product Type:
+
+To update a product type, make a PUT request to URL:
+
+```
+http://localhost:5000/ProductTypes/7
+```
+
+Where '7' is the Id of the product type to update,
+With a request body containing the updated information:
+
+```JSON
+{
+    "label": "UpdatedCategoryName"
+}
+```
+
+### Delete Product Type:
+
+To delete a product type, make a DELETE request to URL:
+
+```
+http://localhost:5000/ProductTypes/7
+```
+
+Where '7' is the Id of the product type to delete

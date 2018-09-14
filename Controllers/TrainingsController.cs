@@ -104,9 +104,16 @@ namespace BangazonAPI.Controllers
 						return trainingDictionary[training.Id];
 					});
 
-				Training singleTraining = apiResponse.Distinct().Single();
-
-				return Ok(singleTraining);
+				try
+				{
+					Training singleTraining = apiResponse.Distinct().Single();
+					return Ok(singleTraining);
+				}
+				catch (InvalidOperationException)
+				{
+					return new StatusCodeResult(StatusCodes.Status404NotFound);
+				}
+				
 			}
 		}
 

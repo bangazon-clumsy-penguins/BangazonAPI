@@ -32,10 +32,16 @@ namespace BangazonAPI.Controllers
         }
 
         // GET: /Orders
+        // GET: /Orders?completed=false
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(string completed)
         {
             string sql = "SELECT * FROM Orders";
+
+            if (completed != null && completed == "false")
+            {
+                sql += " WHERE CustomerAccountId IS null;";
+            }
 
             using (IDbConnection conn = Connection)
             {

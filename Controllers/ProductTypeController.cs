@@ -9,6 +9,16 @@ using Dapper;
 using Microsoft.AspNetCore.Http;
 using System.Data.SqlClient;
 
+/*
+Purpose: Allow API client to interact with the Product Type resouce
+            -retrieve all or single product type
+            -add new product type
+            -modify an existing product type
+            -delete a product type
+
+Author: Phil Patton
+*/
+
 namespace BangazonAPI.Models
 {
     [Route("[controller]")]
@@ -32,7 +42,7 @@ namespace BangazonAPI.Models
 
         /*
             GET /ProductTypes
-            GET /ProductTypes?=label
+            returns an array of all product types
          */
 
         [HttpGet]
@@ -49,7 +59,9 @@ namespace BangazonAPI.Models
 
         }
 
-        // GET api/values/5
+        // GET /ProductTypes/5
+        // returns a single product type with Id 5
+
         [HttpGet("{id}", Name = "GetProductType")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
@@ -74,6 +86,8 @@ namespace BangazonAPI.Models
         }
 
         // POST /ProductTypes
+        // Adds new product type
+
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ProductType ProductType)
         {
@@ -90,6 +104,9 @@ namespace BangazonAPI.Models
                 return CreatedAtRoute("GetProductType", new { id = ProductTypeId }, ProductType);
             }
         }
+
+        // Update /ProductTypes/5
+        // Update product type with Id 5
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] ProductType ProductType)
@@ -125,6 +142,7 @@ namespace BangazonAPI.Models
         }
 
         // DELETE /ProductTypes/5
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

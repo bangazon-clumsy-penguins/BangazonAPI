@@ -37,7 +37,14 @@ namespace BangazonAPI.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Get([FromQuery] string completed)
 		{
-			string sql = "SELECT * FROM Trainings";
+			string sql = @"
+			SELECT 
+				t.Id, t.Name, t.StartDate, t.EndDate, t.MaxOccupancy,
+				e.Id, e.FirstName, e.LastName, e.HireDate, e.IsSupervisor, e.DepartmentId
+				FROM Trainings t
+				JOIN EmployeeTrainings et ON t.Id = et.TrainingId
+				JOIN Employees e ON et.EmployeeId = e.Id
+			";
 
 			if (completed == "false")
 			{
@@ -48,6 +55,7 @@ namespace BangazonAPI.Controllers
 			using (IDbConnection conn = Connection)
 			{
 				var allTrainings = await conn.QueryAsync<Training>(sql);
+
 				return Ok(allTrainings);
 			}
 		}
@@ -56,7 +64,16 @@ namespace BangazonAPI.Controllers
 		[HttpGet("{id}", Name = "GetSingleTraining")]
 		public async Task<IActionResult> Get([FromRoute] int id)
 		{
-			string sql = $"SELECT * FROM Trainings WHERE Id = {id}";
+			string sql = $@"
+			SELECT 
+				t.Id, t.Name, t.StartDate, t.EndDate, t.MaxOccupancy,
+				e.Id, e.FirstName, e.LastName, e.HireDate, e.IsSupervisor, e.DepartmentId
+				FROM Trainings t
+				JOIN EmployeeTrainings et ON t.Id = et.TrainingId
+				JOIN Employees e ON et.EmployeeId = e.Id
+			WHERE Id = {id}
+			";
+
 			using (IDbConnection conn = Connection)
 			{
 				Training singleTraining = (await conn.QueryAsync<Training>(sql)).Single();
@@ -71,7 +88,7 @@ namespace BangazonAPI.Controllers
 			string sql = $@"
 			INSERT INTO Trainings (Name, StartDate, EndDate, MaxOccupancy)
 			VALUES ('{training.Name}', '{training.StartDate}', '{training.EndDate}', {training.MaxOccupancy});
-            SELECT MAX(Id) from Trainings;
+			SELECT MAX(Id) from Trainings;
 			";
 
 			using (IDbConnection conn = Connection)

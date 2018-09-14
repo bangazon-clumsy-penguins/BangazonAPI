@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Building the Bangazon Platform API
 
 Welcome, new Bangazonians!
@@ -39,26 +38,110 @@ If your database needs to be changed in any way, or you wish to add items to be 
 
 Now it's time to build the controllers that handle GET, POST, PUT, and DELETE operations on each resource. Make sure you read, and understand, the requirements in the issue tickets to you can use your ORM and SQL to return the correct data structure to client requests.
 
-=======
 # BangazonAPI
+
 Repo for first Bangazon sprint
->>>>>>> 4f1266baf7fbe58ede722502150092a598f82d64
 
-#### Employees
+## Employees
 
-### Get Employees
+### Get All Employees:
 
-What things you need to install the software and how to install them
-
-```
-Give examples
-```
-
-### Get Single Employee
-
-What things you need to install the software and how to install them
+To get all employees, make a GET request to URL:
 
 ```
-Give examples
+http://localhost:5000/Employees
 ```
 
+Returned will be an array of:
+
+```
+[
+    {
+        "id": 1,
+        "firstName": "Tommy",
+        "lastName": "Smith",
+        "hireDate": "2015-05-01T00:00:00",
+        "isSupervisor": true,
+        "departmentId": 1,
+        "department": {
+            "id": 1,
+            "name": "Finance",
+            "budget": 4000
+        },
+        "computer": {
+            "id": 5,
+            "model": "PC",
+            "purchaseDate": "2018-01-05T00:00:00",
+            "decommisionDate": null
+        }
+    }
+]
+```
+
+### Get Single Employee:
+
+To get a single employee, add a /{id} to the GET request URL:
+
+```
+http://localhost:5000/Employees/7
+```
+
+Returned will be a single Employee of:
+
+```
+{
+    "id": 7,
+    "firstName": "John",
+    "lastName": "Williams",
+    "hireDate": "2015-05-01T00:00:00",
+    "isSupervisor": true,
+    "departmentId": 1,
+    "department": {
+        "id": 1,
+        "name": "Finance",
+        "budget": 4000
+    },
+    "computer": null
+}
+```
+
+### Add Employee:
+
+To add an employee, make a POST request to URL:
+
+```
+http://localhost:5000/Employees
+```
+
+With a request body in the form:
+
+```
+    {
+        "firstName": "Jimmy",
+        "lastName": "Little",
+        "hireDate": "2015-05-01T00:00:00",
+        "isSupervisor": true,
+        "departmentId": 1
+    }
+```
+
+### Update Employee:
+
+To update an employees information, make a PUT request to URL:
+
+```
+http://localhost:5000/Employees/7
+```
+
+Where '7' is the Id of the employee to update,
+With a request body containing the updated information:
+
+```
+    {
+        "firstName": "Sarah",
+        "lastName": "Blackmon",
+        "hireDate": "2015-05-01T00:00:00",
+        "isSupervisor": true,
+        "departmentId": 1
+    }
+```

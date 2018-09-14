@@ -54,7 +54,7 @@ http://localhost:5000/Employees
 
 Returned will be an array of:
 
-```
+```JSON
 [
     {
         "id": 1,
@@ -88,7 +88,7 @@ http://localhost:5000/Employees/7
 
 Returned will be a single Employee of:
 
-```
+```JSON
 {
     "id": 7,
     "firstName": "John",
@@ -115,7 +115,7 @@ http://localhost:5000/Employees
 
 With a request body in the form:
 
-```
+```JSON
     {
         "firstName": "Jimmy",
         "lastName": "Little",
@@ -136,7 +136,7 @@ http://localhost:5000/Employees/7
 Where '7' is the Id of the employee to update,
 With a request body containing the updated information:
 
-```
+```JSON
     {
         "firstName": "Sarah",
         "lastName": "Blackmon",

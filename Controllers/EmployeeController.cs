@@ -9,6 +9,15 @@ using Dapper;
 using Microsoft.AspNetCore.Http;
 using System.Data.SqlClient;
 
+/*
+Purpose: Allow API client to interact with the Employee resouce
+            -retrieve all or single employee with department and computer information attached
+            -add new employee to database
+            -modify an employees information
+
+Author: Phil Patton
+*/
+
 namespace BangazonAPI.Models
 {
     [Route("[controller]")]
@@ -31,8 +40,8 @@ namespace BangazonAPI.Models
         }
 
         /*
-            GET /Employees?q=test
-            GET /Employees?_include=payments
+            GET /Employees
+            Returns all employees with department and computer information if available
          */
         [HttpGet]
         public async Task<IActionResult> Get()
@@ -72,6 +81,8 @@ namespace BangazonAPI.Models
         }
 
         // GET /Employees/5
+        // Returns a single employee object based on Id in route 
+        // with computer and department information attached
         [HttpGet("{id}", Name = "GetEmployee")]
         public async Task<IActionResult> Get([FromRoute]int id)
         {
@@ -97,23 +108,23 @@ namespace BangazonAPI.Models
                                                             Department,
                                                             Computer,
                                                             Employee>(
-                    sql,
-                    (Employee, Department, Computer) =>
-                    {
-                        Employee.Department = Department;
-                        Employee.Computer = Computer;
+                        sql,
+                        (Employee, Department, Computer) =>
+                        {
+                            Employee.Department = Department;
+                            Employee.Computer = Computer;
 
-                        return Employee;
+                            return Employee;
 
-                    }
-                );
+                        }
+                    );
 
                     return Ok(EmployeesQuery.Single());  // Used to be .Values 
                 }
 
                 catch(Exception e)
                 {
-                    Console.WriteLine($@"My error message must by trying to tell me:
+                    Console.WriteLine($@"Employee Get Error Message:
                     {e.Message}");
                     return NotFound();
                 }
@@ -122,6 +133,8 @@ namespace BangazonAPI.Models
         }
 
         // POST /Employees
+        // Adds new Employee to database
+        // Parameters: FirstName, LastName, HireDate, isSupervisor, DepartmentId
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Employee Employee)
         {
@@ -146,17 +159,8 @@ namespace BangazonAPI.Models
 
         ///*
         //    PUT /Employees/5
-
-        //    The [HttpPut] attribute ensures that this method will handle any
-        //    request to a `/Employees/{id}` with the PUT HTTP verb. Alternatively,
-        //    I could name this method `PutEmployee`, or just `Put` and ASP.NET
-        //    will detect that the word `Put` is in the method name and ensure
-        //    that it will only be invoke for PUT operations.
-
-        //    All other controllers have this method named as `Put`. It's named
-        //    differently here to show that the [HttpPut] attribute enforces which
-        //    verb is handled.
-        // */
+        //      Updates Employee information for the employee with the ID in the route
+        // Parameters: FirstName, LastName, HireDate, isSupervisor, DepartmentId
         [HttpPut("{id}")]
         public async Task<IActionResult> ChangeEmployee(int id, [FromBody] Employee Employee)
         {
@@ -194,24 +198,7 @@ namespace BangazonAPI.Models
             }
         }
 
-        // DELETE /Employees/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            string sql = $@"DELETE FROM Employees WHERE Id = {id}";
-
-            using (IDbConnection conn = Connection)
-            {
-                int rowsAffected = await conn.ExecuteAsync(sql);
-                if (rowsAffected > 0)
-                {
-                    return new StatusCodeResult(StatusCodes.Status204NoContent);
-                }
-                throw new Exception("No rows affected");
-            }
-
-        }
-
+        // Checks for the existence of Employee based on Id parameter passed and returns a boolean
         private bool EmployeeExists(int id)
         {
             string sql = $"SELECT Id, FirstName, LastName, HireDate, IsSupervisor, DepartmentId FROM Employees WHERE Id = {id}";

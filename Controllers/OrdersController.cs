@@ -56,6 +56,13 @@ namespace BangazonAPI.Controllers
         {
             string sql = $"SELECT * FROM Orders o WHERE o.Id = {id}";
 
+
+            //SELECT*
+            //FROM Orders o
+            //JOIN OrderedProducts op on o.Id = op.OrderId
+            //JOIN Products p on op.ProductId = p.Id
+            //WHERE o.Id = 3;
+
             using (IDbConnection conn = Connection)
             {
                 var singleOrder = (await conn.QueryAsync<Order>(sql)).Single();

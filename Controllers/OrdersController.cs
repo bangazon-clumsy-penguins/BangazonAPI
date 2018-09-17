@@ -70,13 +70,13 @@ namespace BangazonAPI.Controllers
         // GET: /Orders/3?_include=products will return a given order and all the products on that order
         // GET: /Orders/3?_include=customers will return a given order and the assocaited customer
         [HttpGet("{id}", Name = "GetSingleOrder")]
-        public async Task<IActionResult> Get(int id, string _include)
+        public async Task<IActionResult> Get([FromRoute] int id, string _include)
         {
             string sql = "";
 
-            if ((_include.ToLower() != "products") && (_include.ToLower() != "customers"))
+            if (_include == null || ((_include.ToLower() != "products") && (_include.ToLower() != "customers")))
             {
-                sql = $"SELECT * FROM Orders o WHERE o.Id = {id}";
+                sql = $"SELECT * FROM Orders o WHERE o.Id = {id};";
             }
             else if (_include.ToLower() == "products")
             {
@@ -100,7 +100,7 @@ namespace BangazonAPI.Controllers
             {
                 try
                 {
-                    if (_include.ToLower() == "products")
+                    if ((_include != null) && (_include.ToLower() == "products"))
                     {
                         Dictionary<string, Order> orderAndProducts = new Dictionary<string, Order>();
 
@@ -120,7 +120,7 @@ namespace BangazonAPI.Controllers
                         });
                         return Ok(orderAndProducts);
                     }
-                    else if (_include.ToLower() == "customers")
+                    else if ((_include != null) && (_include.ToLower() == "customers"))
                     {
                         var orderPlusCustomer = (await conn.QueryAsync<Order, Customer, Order>(sql, (order, customer) =>
                         {
@@ -144,13 +144,15 @@ namespace BangazonAPI.Controllers
 
         // POST: /Orders
         // Creates an order in the Orders Table in the database, must supply CustomerId and CustomerAccountId in the body of the request as ints
+        // Upon Order creation the customerAccountId will be set to null
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Order order)
         {
+            order.CustomerAccountId = null;
             string sql = $@"INSERT INTO Orders
-            (CustomerId, CustomerAccountId)
+            (CustomerId)
             VALUES
-            ('{order.CustomerId}', '{order.CustomerAccountId}');
+            ('{order.CustomerId}');
             select MAX(Id) from Orders;";
 
             using (IDbConnection conn = Connection)

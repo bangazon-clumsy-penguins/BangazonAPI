@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> master
 # Building the Bangazon Platform API
 
 Welcome, new Bangazonians!
@@ -132,7 +128,7 @@ DELETE /Trainings/{Id}
 
 The "StartDate" of the training to be deleted must be in the future. Otherwise, an exception will be thrown and the item will not be deleted
 
-### 1. Customers Controller
+### 2. Customers Controller
 
 **GET**
 
@@ -273,7 +269,7 @@ Must match Order model. CustomerId and CustomerAccountId must be passed.
     "CustomerAccountId": 5
 }
 
-## 3. Product Types
+## 4. Product Types
 
 **GET**
 
@@ -356,7 +352,7 @@ http://localhost:5000/ProductTypes/7
 
 Where '7' is the Id of the product type to delete
 
-## 4. Employees
+## 5. Employees
 
 **GET**
 

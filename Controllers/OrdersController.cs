@@ -100,17 +100,8 @@ namespace BangazonAPI.Controllers
                 }
                 else if (_include.ToLower() == "customers")
                 {
-                    //Dictionary<string, Order> orderWithCustomer = new Dictionary<string, Order>();
-
                     var orderPlusCustomer = (await conn.QueryAsync<Order, Customer, Order>(sql, (order, customer) => 
                     {
-                        //string orderId = $"Order{(order.Id).ToString()}";
-                        //if (!orderWithCustomer.ContainsKey(orderId))
-                        //{
-                        //    orderWithCustomer[orderId] = order;
-                        //    orderWithCustomer[orderId].CustomerOnOrder = customer;
-                        //}
-
                         order.CustomerOnOrder = customer;
                         return order;
                     })).Single();

@@ -210,6 +210,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Queries BangazonAPI DB to see if specific order exists. Returns true if it does, false if it doesn't
         private bool OrderExists(int id)
         {
             string sql = $"SELECT * FROM Orders WHERE Id = {id}";

@@ -96,7 +96,7 @@ Training objects to be posted must be included in the body of the request and ma
 }
 ````
 
-The MaxOccupancy property must be a positive integer. Otherwise, an exception will be thrown and the item will not be posted.
+The MaxOccupancy property must be a positive integer and the EndDate property must not be before the StartDate. Otherwise, an exception will be thrown and the item will not be created.
 
 **PUT**
 
@@ -116,7 +116,7 @@ Like the POST method, the Training object to be edited must be included in the b
 }
 ````
 
-The MaxOccupancy property must be a positive integer. Otherwise, an exception will be thrown and the item will not be edited.
+The MaxOccupancy property must be a positive integer and the EndDate property must not be before the StartDate. Otherwise, an exception will be thrown and the item will not be edited.
 
 **DELETE**
 
@@ -138,7 +138,9 @@ Usage:
 
 /Customers - return array of all customer objects
 
-/Customers?(_include=products, _include=payments, _include=products,payments, q=SearchString) returns an array of objects matching the parameters
+
+/Customers?(active=false, _include=products, _include=payments, _include=products,payments, q=SearchString) returns an array of objects matching the parameters. The "active" parameter overrides all other parameters except q.
+
 
 /Customers/{Id} returns a single object matching the Id
 
@@ -453,7 +455,6 @@ With a request body containing the updated information:
         "departmentId": 1
     }
 ```
-<<<<<<< HEAD
 
 ### 6. PaymentTypes Controller
 **GET**
@@ -489,7 +490,7 @@ Must match PaymentType model. Label must be passed.
 }
 ```
 
-### 5. Departments Controller
+### 7. Departments Controller
 
 **GET**
 

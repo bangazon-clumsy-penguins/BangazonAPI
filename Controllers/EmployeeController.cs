@@ -143,7 +143,7 @@ namespace BangazonAPI.Models
             VALUES ('{Employee.FirstName}'
                     ,'{Employee.LastName}'
                     ,'{Employee.HireDate}'
-                    ,{Convert.ToInt32(Employee.isSupervisor)}
+                    ,{Convert.ToInt32(Employee.IsSupervisor)}
                     ,{Employee.DepartmentId});
             select MAX(Id) from Employees;";
 
@@ -169,7 +169,7 @@ namespace BangazonAPI.Models
             SET FirstName = '{Employee.FirstName}'
 				,LastName = '{Employee.LastName}'
 				,HireDate = '{Employee.HireDate}'
-				,IsSupervisor = {Convert.ToInt32(Employee.isSupervisor)}
+				,IsSupervisor = {Convert.ToInt32(Employee.IsSupervisor)}
 				,DepartmentId = {Employee.DepartmentId}
             WHERE Id = {id}";
 

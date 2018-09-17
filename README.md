@@ -137,3 +137,47 @@ Usage: /Products/{Id}
 
 Delete a product matching the supplied Id
 
+### 3. Orders Controller
+**GET**
+
+Endpoint: [localhost:5000/Orders](http://localhost:5000/Orders)
+
+Usage: 
+
+/Orders - return array of all Order objects
+
+/Orders?(_include=products, _include=customer) returns an Order with the matching parameter inside the Order as a List(products) or Object(customer)
+
+/Orders/{Id} returns a single object matching the Id
+
+**POST**
+
+Must match Order model. CustomerId and CustomerAccountId must be passed.
+
+```JSON
+{
+    "CustomerId": 3,
+    "CustomerAccountId": 4
+}
+```
+**PUT**
+
+Usage: /Orders/{Id}
+
+Edit a Order matching the supplied Id
+
+Must match Order model. CustomerId and CustomerAccountId must be passed.
+
+```JSON
+{
+    "CustomerId": 3,
+    "CustomerAccountId": 5
+}
+```
+
+**DELETE**
+
+Usage: /Orders/{Id}
+
+Delete an Order matching the supplied Id and the products on the order
+

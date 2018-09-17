@@ -25,6 +25,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BangazonAPI.Controllers
 {
+    // Sets the route and the _config variable for the database connection
     [Route("[controller]")]
     [ApiController]
     public class PaymentTypesController : ControllerBase

@@ -237,7 +237,7 @@ Delete a product matching the supplied Id
 
 Endpoint: [localhost:5000/Orders](http://localhost:5000/Orders)
 
-Usage: 
+Usage:
 
 /Orders - return array of all Order objects
 
@@ -268,17 +268,16 @@ Must match Order model. CustomerId and CustomerAccountId must be passed.
     "CustomerId": 3,
     "CustomerAccountId": 5
 }
+```
 
 ## 4. Product Types
 
 **GET**
 
 To get all product types, make a GET request to URL:
-
 ```
 http://localhost:5000/ProductTypes
 ```
-
 Returned will be an array of:
 
 ```JSON
@@ -335,7 +334,6 @@ With a request body containing the updated information:
 ```JSON
 {
     "label": "UpdatedCategoryName"
->>>>>>> master
 }
 ```
 

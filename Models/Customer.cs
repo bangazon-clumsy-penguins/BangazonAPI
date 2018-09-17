@@ -5,10 +5,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
+//This class is representative of the Customers table in Bangazon.db
+
 namespace BangazonAPI.Models
 {
     public class Customer
     {
+        /* 
+         AUTHORED: Adam Wieckert, Seth Dana, Elliot Huck, Evan Lusky, Phil Patton
+
+         PURPOSE: Model to reflect the items on the Customers Table in the BangazonAPI DB
+        */
         [Key]
         public int Id { get; set; }
         public string FirstName { get; set; }

@@ -38,13 +38,112 @@ If your database needs to be changed in any way, or you wish to add items to be 
 
 Now it's time to build the controllers that handle GET, POST, PUT, and DELETE operations on each resource. Make sure you read, and understand, the requirements in the issue tickets to you can use your ORM and SQL to return the correct data structure to client requests.
 
-# BangazonAPI
+### 1. Customers Controller
 
-Repo for first Bangazon sprint
+**GET**
 
-## Product Types
+Endpoint: [localhost:5000/Customers](http://localhost:5000/Customers)
 
-### Get All Product Types:
+Usage:
+
+/Customers - return array of all customer objects
+
+/Customers?(\_include=products, \_include=payments, \_include=products,payments, q=SearchString) returns an array of objects matching the parameters
+
+/Customers/{Id} returns a single object matching the Id
+
+**POST**
+
+Must match Customer model. FirstName, LastName, JoinDate, and LastInteractionDate must be passed.
+
+```JSON
+{
+    "firstName": "Tom",
+    "lastName": "Smith",
+    "joinDate": "2016-01-01T00:00:00",
+    "lastInteractionDate": "2017-01-01T00:00:00"
+}
+```
+
+**PUT**
+
+Usage: /Customers/{Id}
+
+Edit a customer matching the supplied Id
+
+Must match Customer model. FirstName, LastName, and LastInteractionDate are required params.
+
+```JSON
+{
+    "firstName": "Tom",
+    "lastName": "Smith",
+    "lastInteractionDate": "2017-01-01T00:00:00"
+}
+```
+
+**DELETE**
+
+Usage: /Customers/{Id}
+
+Delete a customer matching the supplied Id
+
+### 2. Products Controller
+
+**GET**
+
+Endpoint: [localhost:5000/Products](http://localhost:5000/Products)
+
+Usage:
+
+/Products - return array of all customer objects
+
+returns an array of objects
+
+/Products/{Id} returns a single object matching the Id
+
+**POST**
+
+Must match Product model. Title, Description, Quantity, Price, ProductTypeId, and CustomerId are required params.
+
+```JSON
+{
+    "title": "Football",
+    "description": "Sick Football",
+    "quantity": 7,
+    "price": 47.5,
+    "productTypeId": 1,
+    "customerId": 1
+}
+```
+
+**PUT**
+
+Usage: /Products/{Id}
+
+Edit a product matching the supplied Id
+
+Must match Product model. Title, Description, Quantity, Price, ProductTypeId, and CustomerId are required params.
+
+```JSON
+{
+    "title": "Football",
+    "description": "Sick Football",
+    "quantity": 7,
+    "price": 47.5,
+    "productTypeId": 1,
+    "customerId": 1
+}
+```
+
+**DELETE**
+
+Usage: /Products/{Id}
+
+Delete a product matching the supplied Id
+
+## 3. Product Types
+
+**GET**
 
 To get all product types, make a GET request to URL:
 
@@ -63,8 +162,6 @@ Returned will be an array of:
 ]
 ```
 
-### Get Single Product Type:
-
 To get a single employee, add a /{id} to the GET request URL:
 
 ```
@@ -80,7 +177,7 @@ Returned will be a single Product Type:
 }
 ```
 
-### Add Product Type:
+**POST**
 
 To add a new product type, make a POST request to URL:
 
@@ -96,7 +193,7 @@ With a request body in the form:
 }
 ```
 
-### Update Product Type:
+**PUT**
 
 To update a product type, make a PUT request to URL:
 
@@ -113,7 +210,7 @@ With a request body containing the updated information:
 }
 ```
 
-### Delete Product Type:
+**DELETE**
 
 To delete a product type, make a DELETE request to URL:
 

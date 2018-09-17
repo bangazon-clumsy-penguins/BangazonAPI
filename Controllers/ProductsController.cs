@@ -9,8 +9,16 @@ using Dapper;
 using Microsoft.AspNetCore.Http;
 using System.Data.SqlClient;
 
+/* AUTHOR: Seth Dana
+ * 
+ * 
+ * This is the Products controller for the public facing API. This controller allows full CRUD functionality on the Products table 
+ */
+
 namespace BangazonAPI.Models
 {
+    //Set the ROUTE and set up the private _config file to allow a connection to the database
+
     [Route("[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
@@ -30,7 +38,8 @@ namespace BangazonAPI.Models
             }
         }
 
-        //    GET /Products
+        //GET /Products
+        //Returns all products
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -46,6 +55,7 @@ namespace BangazonAPI.Models
         }
 
         // GET /Products/5
+        //Returns a single product matching the Id passed in the URL
         [HttpGet("{id}", Name = "GetProducts")]
         public async Task<IActionResult> Get([FromRoute]int id)
         {
@@ -53,12 +63,22 @@ namespace BangazonAPI.Models
 
             using (IDbConnection conn = Connection)
             {
-                IEnumerable<Product> product = await conn.QueryAsync<Product>(sql);
+                try
+                {
+                Product product = (await conn.QueryAsync<Product>(sql)).Single();
                 return Ok(product);
+                }
+
+                catch (InvalidOperationException)
+                {
+                    return new StatusCodeResult(StatusCodes.Status404NotFound);
+                }
             }
         }
 
         //POST /Products
+        //Post a product to DB.
+        //Must match Product model. Title, Description, Quantity, Price, ProductTypeId, and CustomerId are required params.
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Product product)
         {
@@ -77,6 +97,10 @@ namespace BangazonAPI.Models
             }
         }
 
+
+        //PUT /Products
+        //Edit Product
+        //Must match Product model. Title, Description, Quantity, Price, ProductTypeId, and CustomerId are required params.
         [HttpPut("{id}")]
         public async Task<IActionResult> ChangeProduct(int id, [FromBody] Product product)
         {
@@ -111,6 +135,7 @@ namespace BangazonAPI.Models
         }
 
        // DELETE /Products/5
+       //Deletes product matching product Id passed in URL
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -128,6 +153,7 @@ namespace BangazonAPI.Models
 
         }
 
+        //This method is called when a "No Rows Affected" exception is thrown to check and ensure the item doesn't exist in the DB
         private bool ProductExists(int id)
         {
             string sql = $"SELECT Id FROM Products WHERE Id = {id}";

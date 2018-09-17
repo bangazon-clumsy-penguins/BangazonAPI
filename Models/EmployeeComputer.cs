@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 
 namespace BangazonAPI.Models
 {
+    /* 
+     AUTHORED: Adam Wieckert, Seth Dana, Elliot Huck, Evan Lusky, Phil Pattons
+
+     PURPOSE: Model to reflect the items on the EmployeeComputers Table in the BangazonAPI DB
+    */
     public class EmployeeComputer
     {
 

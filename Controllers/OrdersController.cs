@@ -238,5 +238,16 @@ namespace BangazonAPI.Controllers
                 return conn.Query<Order>(sql).Count() == 0;
             }
         }
+
+        private bool CustomerAccountCheck(Order order)
+        {
+            string sql = $@"SELECT *
+                            FROM CustomerAccounts ca
+                            WHERE ca.Id = {order.CustomerAccountId} AND {order.CustomerId} = ca.CustomerId;";
+            using (IDbConnection conn = Connection)
+            {
+                return conn.Query<CustomerAccount>(sql).Count() > 0;
+            }
+        }
     }
 }

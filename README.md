@@ -47,7 +47,7 @@ Usage:
 
 /Customers - return array of all customer objects
 
-/Customers?(_include=products, _include=payments, _include=products,payments, q=SearchString) returns an array of objects matching the parameters
+/Customers?(active=false, _include=products, _include=payments, _include=products,payments, q=SearchString) returns an array of objects matching the parameters. The "active" parameter overrides all other parameters except q.
 
 /Customers/{Id} returns a single object matching the Id
 

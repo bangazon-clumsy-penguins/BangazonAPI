@@ -48,11 +48,11 @@ namespace BangazonAPI.Models
         }
 
         /*
-            GET /Customers?q=test
-            GET /Customers?_include=payments
-            GET /Customers?_include=products
-            GET /Customers?_include=products,payments
-            q is for a string query of customers first or last name, _include joins payments or products, or both onto customer. 
+            GET /Customers/active=false Queries for customers who don't have an active order (This param overrides all others except q)
+            GET /Customers?q={FirstName} || {LastName} String query of customers first or last name. 
+            GET /Customers?_include=payments Includes the customers payment options
+            GET /Customers?_include=products Includes the customers products
+            GET /Customers?_include=products,payments Includes both the payment options and products
          */
         [HttpGet]
         public async Task<IActionResult> Get(string q, string _include, string active)

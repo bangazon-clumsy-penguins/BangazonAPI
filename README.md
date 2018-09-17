@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+
+=======
+>>>>>>> master
 # Building the Bangazon Platform API
 
 Welcome, new Bangazonians!
@@ -37,6 +41,96 @@ If your database needs to be changed in any way, or you wish to add items to be 
 ## Controllers
 
 Now it's time to build the controllers that handle GET, POST, PUT, and DELETE operations on each resource. Make sure you read, and understand, the requirements in the issue tickets to you can use your ORM and SQL to return the correct data structure to client requests.
+
+# BangazonAPI
+Repo for first Bangazon sprint
+
+### 1. Trainings Controller
+
+Endpoint: [localhost:5000/Trainings](http://localhost:5000/Trainings)
+
+Sample Training object:
+````JSON
+{
+	"registeredEmployees": [
+		{Employee1},
+		{Employee2},
+		{...}
+	],
+	"id": 1,
+	"name": "Very Important Training",
+	"startDate": "2018-09-14T00:00:00",
+	"endDate": "2018-09-21T00:00:00",
+	"maxOccupancy": 5
+}
+````
+
+**GET**
+
+Usage: Returns Training objects from the database.
+
+GET /Trainings
+
+- Returns an array of all Training objects, with all the employees registered for each training included as an array of Employee objects on each Training object.
+
+GET /Trainings/{Id}
+
+- Returns a single Training object with the "id" property equal to the {Id} parameter that was passed. Also, all the employees registered for that training are included as an array of Employee objects on the Training object.
+
+GET /Trainings?completed=false
+
+- Returns an array of Trainings objects with "endDate" properties of the current day or later.
+
+
+**POST**
+
+Usage: Adds new Training objects to the database.
+
+POST /Trainings
+
+- Returns a JSON-formatted object representing the training that was just posted.
+
+Training objects to be posted must be included in the body of the request and match the following JSON format:
+````JSON
+{
+	"Name": "Name of Training",
+	"StartDate": "YYYY-MM-DDT00:00:00",
+	"EndDate": "YYYY-MM-DDT00:00:00",
+	"MaxOccupancy": 42
+}
+````
+
+The MaxOccupancy property must be a positive integer. Otherwise, an exception will be thrown and the item will not be posted.
+
+**PUT**
+
+Usage: Edits Training objects in the database.
+
+PUT /Trainings/{Id}
+
+- Returns the HTTP status code "204 - No Content"
+
+Like the POST method, the Training object to be edited must be included in the body of the request and match the following JSON format:
+````JSON
+{
+	"Name": "Name of Training",
+	"StartDate": "YYYY-MM-DDT00:00:00",
+	"EndDate": "YYYY-MM-DDT00:00:00",
+	"MaxOccupancy": 42
+}
+````
+
+The MaxOccupancy property must be a positive integer. Otherwise, an exception will be thrown and the item will not be edited.
+
+**DELETE**
+
+Usage: Removes Training objects from the database.
+
+DELETE /Trainings/{Id}
+
+- Returns the HTTP status code "204 - No Content"
+
+The "StartDate" of the training to be deleted must be in the future. Otherwise, an exception will be thrown and the item will not be deleted
 
 ### 1. Customers Controller
 

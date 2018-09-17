@@ -245,7 +245,7 @@ Usage:
 /Orders - return array of all Order objects
 
 /Orders?(_include=products, _include=customer) returns an Order with the matching parameter inside the Order as a List(products) or Object(customer)
-
+/Orders?(completed=false, completed=true) returned only the incomplete or complete orders. Complete orders are those with a customerAccountId
 /Orders/{Id} returns a single object matching the Id
 
 **POST**

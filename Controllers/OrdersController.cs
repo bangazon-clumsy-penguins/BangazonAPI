@@ -57,6 +57,9 @@ namespace BangazonAPI.Controllers
             if (completed != null && completed == "false")
             {
                 sql += " WHERE CustomerAccountId IS null;";
+            } else if (completed != null && completed == "true")
+            {
+                sql += " WHERE CustomerAccountId IS NOT null;";
             }
 
             using (IDbConnection conn = Connection)

@@ -42,7 +42,6 @@ If your database needs to be changed in any way, or you wish to add items to be 
 
 Now it's time to build the controllers that handle GET, POST, PUT, and DELETE operations on each resource. Make sure you read, and understand, the requirements in the issue tickets to you can use your ORM and SQL to return the correct data structure to client requests.
 
-<<<<<<< HEAD
 # BangazonAPI
 Repo for first Bangazon sprint
 
@@ -132,7 +131,7 @@ DELETE /Trainings/{Id}
 - Returns the HTTP status code "204 - No Content"
 
 The "StartDate" of the training to be deleted must be in the future. Otherwise, an exception will be thrown and the item will not be deleted
-=======
+
 ### 1. Customers Controller
 **GET**
 
@@ -232,4 +231,3 @@ Usage: /Products/{Id}
 
 Delete a product matching the supplied Id
 
->>>>>>> master

@@ -33,7 +33,10 @@ namespace BangazonAPI.Controllers
 			}
 		}
 
-		// GET: api/Trainings?completed=false
+		// GET: /Trainings
+		// GET: /Trainings?completed=false
+		// Purpose: GET a single Training object from the Trainings table in the database
+		// Arguments: completed=false can be passed in the query string to show only trainings that have not ended
 		[HttpGet]
 		public async Task<IActionResult> Get([FromQuery] string completed)
 		{
@@ -74,7 +77,9 @@ namespace BangazonAPI.Controllers
 			}
 		}
 
-		// GET: api/Trainings/5
+		// GET: /Trainings/5
+		// Purpose: GET a single Training object from the Trainings table in the database
+		// Arguments: The Id of the training to be returned is passed in the route
 		[HttpGet("{id}", Name = "GetSingleTraining")]
 		public async Task<IActionResult> Get([FromRoute] int id)
 		{
@@ -113,11 +118,26 @@ namespace BangazonAPI.Controllers
 				{
 					return new StatusCodeResult(StatusCodes.Status404NotFound);
 				}
-				
+
 			}
 		}
 
-		// POST: api/Trainings
+		/* 
+		POST: /Trainings
+		Purpose: POST a new training object to the Trainings table in the database
+		Arguments: A JSON-formatted object must be passed in the body of the request
+		The object must match the following format:
+		
+		{
+			"Name": "Name of Training",
+			"StartDate": "YYYY-MM-DDT00:00:00",
+			"EndDate": "YYYY-MM-DDT00:00:00",
+			"MaxOccupancy": 42
+		}
+
+		The MaxOccupancy property must be a positive integer. 
+		Otherwise, an exception will be thrown and the item will not be posted.
+		*/
 		[HttpPost]
 		public async Task<IActionResult> Post([FromBody] Training training)
 		{
@@ -140,7 +160,23 @@ namespace BangazonAPI.Controllers
 			}
 		}
 
-		// PUT: api/Trainings/5
+		/* 
+		PUT: /Trainings/5
+		Purpose: Edit one or more properties of a training object in the Trainings table of the database
+		Arguments:	The Id of the training to be edited 
+					A JSON-formatted object must be passed in the body of the request
+		The object must match the following format:
+
+		{
+			"Name": "Name of Training",
+			"StartDate": "YYYY-MM-DDT00:00:00",
+			"EndDate": "YYYY-MM-DDT00:00:00",
+			"MaxOccupancy": 42
+		}
+
+		The MaxOccupancy property must be a positive integer. 
+		Otherwise, an exception will be thrown and the item will not be edited.
+		*/
 		[HttpPut("{id}")]
 		public async Task<IActionResult> Put([FromRoute] int id, [FromBody] Training training)
 		{
@@ -183,8 +219,15 @@ namespace BangazonAPI.Controllers
 			}
 		}
 
-		// DELETE: api/ApiWithActions/5
-		[HttpDelete("{id}")] 
+		/* 
+		DELETE: /Trainings/5
+		Purpose: Delete a training object from the Trainings table of the database
+		Arguments:	The Id of the training to be deleted
+
+		The "StartDate" of the training to be deleted must be in the future.
+		Otherwise, an exception will be thrown and the item will not be deleted
+		*/
+		[HttpDelete("{id}")]
 		public async Task<IActionResult> Delete(int id)
 		{
 			if (TrainingHasStarted(id))

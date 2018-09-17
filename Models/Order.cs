@@ -19,9 +19,9 @@ namespace BangazonAPI.Models
 
         public int? CustomerAccountId { get; set; }
 
-        public List<Product> ProductsOnOrder = new List<Product>();
+        public List<Product> Products = new List<Product>();
 
-        public Customer CustomerOnOrder { get; set; }
+        public Customer Customer { get; set; }
 
 
   }

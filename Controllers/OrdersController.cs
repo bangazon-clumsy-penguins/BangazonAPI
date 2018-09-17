@@ -110,11 +110,11 @@ namespace BangazonAPI.Controllers
                             if (!orderAndProducts.ContainsKey(orderId))
                             {
                                 orderAndProducts[orderId] = order;
-                                orderAndProducts[orderId].ProductsOnOrder.Add(product);
+                                orderAndProducts[orderId].Products.Add(product);
                             }
                             else
                             {
-                                orderAndProducts[orderId].ProductsOnOrder.Add(product);
+                                orderAndProducts[orderId].Products.Add(product);
                             }
                             return order;
                         });
@@ -124,7 +124,7 @@ namespace BangazonAPI.Controllers
                     {
                         var orderPlusCustomer = (await conn.QueryAsync<Order, Customer, Order>(sql, (order, customer) =>
                         {
-                            order.CustomerOnOrder = customer;
+                            order.Customer = customer;
                             return order;
                         })).Single();
                         return Ok(orderPlusCustomer);

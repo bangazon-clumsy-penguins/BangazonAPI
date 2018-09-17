@@ -56,16 +56,22 @@ namespace BangazonAPI.Controllers
         {
             string sql = "";
 
-            if (_include == null)
+            if ((_include.ToLower() != "products") && (_include.ToLower() != "customers"))
             {
                 sql = $"SELECT * FROM Orders o WHERE o.Id = {id}";
-            } else if (_include == "products")
+            }
+            else if (_include.ToLower() == "products")
             {
-
                 sql = $@"SELECT *
                 FROM Orders o
                 JOIN OrderedProducts op on o.Id = op.OrderId
                 JOIN Products p on op.ProductId = p.Id
+                WHERE o.Id = {id};";
+            } else if (_include.ToLower() == "customers")
+            {
+                sql = $@"SELECT *
+                FROM Orders o
+                JOIN Customers c on o.CustomerId = c.Id
                 WHERE o.Id = {id};";
             }
 
@@ -74,18 +80,13 @@ namespace BangazonAPI.Controllers
 
             using (IDbConnection conn = Connection)
             {
-                if (_include == null)
-                {
-                    var singleOrder = (await conn.QueryAsync<Order>(sql)).Single();
-                    return Ok(singleOrder);
-                }
-                else if (_include == "products")
+                if (_include.ToLower() == "products")
                 {
                     Dictionary<string, Order> orderAndProducts = new Dictionary<string, Order>();
 
                     var orderPlusProducts = await conn.QueryAsync<Order, OrderedProduct, Product, Order>(sql, (order, orderedProduct, product) => {
                         string orderId = $"Order{(order.Id).ToString()}";
-                        if (!orderAndProducts.ContainsKey($"orderId"))
+                        if (!orderAndProducts.ContainsKey(orderId))
                         {
                             orderAndProducts[orderId] = order;
                             orderAndProducts[orderId].ProductsOnOrder.Add(product);
@@ -97,12 +98,29 @@ namespace BangazonAPI.Controllers
                     });
                     return Ok(orderAndProducts);
                 }
+                else if (_include.ToLower() == "customers")
+                {
+                    //Dictionary<string, Order> orderWithCustomer = new Dictionary<string, Order>();
+
+                    var orderPlusCustomer = (await conn.QueryAsync<Order, Customer, Order>(sql, (order, customer) => 
+                    {
+                        //string orderId = $"Order{(order.Id).ToString()}";
+                        //if (!orderWithCustomer.ContainsKey(orderId))
+                        //{
+                        //    orderWithCustomer[orderId] = order;
+                        //    orderWithCustomer[orderId].CustomerOnOrder = customer;
+                        //}
+
+                        order.CustomerOnOrder = customer;
+                        return order;
+                    })).Single();
+                    return Ok(orderPlusCustomer);
+                }
                 else
                 {
-                    return Ok();
+                    var singleOrder = (await conn.QueryAsync<Order>(sql)).Single();
+                    return Ok(singleOrder);
                 }
-                
-                
             }
         }
 

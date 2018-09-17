@@ -156,6 +156,7 @@ Returned will be an array of:
 ```JSON
 [
     {
+        "id": 1,
         "label": "Balls"
     }
 ]
@@ -171,6 +172,7 @@ Returned will be a single Product Type of:
 
 ```JSON
 {
+    "id": 7,
     "label": "Shoes"
 }
 ```

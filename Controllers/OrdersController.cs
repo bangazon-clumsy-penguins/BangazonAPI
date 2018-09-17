@@ -52,21 +52,57 @@ namespace BangazonAPI.Controllers
 
         // GET: /Orders/5
         [HttpGet("{id}", Name = "GetSingleOrder")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(int id, string _include)
         {
-            string sql = $"SELECT * FROM Orders o WHERE o.Id = {id}";
+            string sql = "";
+
+            if (_include == null)
+            {
+                sql = $"SELECT * FROM Orders o WHERE o.Id = {id}";
+            } else if (_include == "products")
+            {
+
+                sql = $@"SELECT *
+                FROM Orders o
+                JOIN OrderedProducts op on o.Id = op.OrderId
+                JOIN Products p on op.ProductId = p.Id
+                WHERE o.Id = {id};";
+            }
 
 
-            //SELECT*
-            //FROM Orders o
-            //JOIN OrderedProducts op on o.Id = op.OrderId
-            //JOIN Products p on op.ProductId = p.Id
-            //WHERE o.Id = 3;
+
 
             using (IDbConnection conn = Connection)
             {
-                var singleOrder = (await conn.QueryAsync<Order>(sql)).Single();
-                return Ok(singleOrder);
+                if (_include == null)
+                {
+                    var singleOrder = (await conn.QueryAsync<Order>(sql)).Single();
+                    return Ok(singleOrder);
+                }
+                else if (_include == "products")
+                {
+                    Dictionary<string, Order> orderAndProducts = new Dictionary<string, Order>();
+
+                    var orderPlusProducts = await conn.QueryAsync<Order, OrderedProduct, Product, Order>(sql, (order, orderedProduct, product) => {
+                        string orderId = $"Order{(order.Id).ToString()}";
+                        if (!orderAndProducts.ContainsKey($"orderId"))
+                        {
+                            orderAndProducts[orderId] = order;
+                            orderAndProducts[orderId].ProductsOnOrder.Add(product);
+                        } else
+                        {
+                            orderAndProducts[orderId].ProductsOnOrder.Add(product);
+                        }
+                        return order;
+                    });
+                    return Ok(orderAndProducts);
+                }
+                else
+                {
+                    return Ok();
+                }
+                
+                
             }
         }
 

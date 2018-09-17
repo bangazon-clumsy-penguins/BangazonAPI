@@ -415,3 +415,44 @@ With a request body containing the updated information:
         "departmentId": 1
     }
 ```
+### 5. Departments Controller
+
+**GET**
+
+Endpoint: [localhost:5000/Departments](http://localhost:5000/Departments)
+
+Usage:
+
+/Departments - return array of all department objects
+
+/Customers?\_include=employees - returns all department objects with a list of employees
+
+/Departments/{Id} returns a single object matching the Id
+
+**POST**
+
+Must match Department model. Name, Budget.
+
+```JSON
+{
+    "Name": "Finance",
+    "Budget": 56000
+}
+```
+
+**PUT**
+
+Usage: /Departments/{Id}
+
+Edit a customer matching the supplied Id
+
+Must match Department model. Name, Budget.
+
+```JSON
+{
+    "Name": "Finance",
+    "Budget": 56000
+}
+```
+
+

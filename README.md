@@ -163,7 +163,8 @@ Edit a customer matching the supplied Id
 
 Must match Customer model. FirstName, LastName, and LastInteractionDate are required params.
 
-```JSON
+```
+JSON
 {
     "firstName": "Tom",
     "lastName": "Smith",
@@ -270,6 +271,12 @@ Must match Order model. CustomerId and CustomerAccountId must be passed.
 }
 ```
 
+**DELETE**
+Usage: /Orders/{Id}
+
+Delete an Order matching the supplied Id and the products on the order
+
+
 ## 4. Product Types
 
 **GET**
@@ -336,11 +343,6 @@ With a request body containing the updated information:
     "label": "UpdatedCategoryName"
 }
 ```
-
-**DELETE**
-Usage: /Orders/{Id}
-
-Delete an Order matching the supplied Id and the products on the order
 
 To delete a product type, make a DELETE request to URL:
 
@@ -450,4 +452,38 @@ With a request body containing the updated information:
         "isSupervisor": true,
         "departmentId": 1
     }
+```
+
+### 6. PaymentTypes Controller
+**GET**
+
+Endpoint: [localhost:5000/paymentTypes](http://localhost:5000/paymentTypes)
+
+Usage:
+
+/paymentTypes - return array of all paymentTypes objects
+
+/paymentTypes/{Id} returns a single object matching the Id
+
+**POST**
+
+Must match PaymentType model. Label must be passed.
+
+```JSON
+{
+    "Label": "Visa"
+}
+```
+**PUT**
+
+Usage: /PaymentTypes/{Id}
+
+Edit a PaymentType matching the supplied Id
+
+Must match PaymentType model. Label must be passed.
+
+```JSON
+{
+    "CustomerId": "Master Card"
+}
 ```

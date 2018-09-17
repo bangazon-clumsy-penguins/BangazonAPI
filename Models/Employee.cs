@@ -27,5 +27,10 @@ namespace BangazonAPI.Models
 
         public int DepartmentId { get; set; }
 
+        public Department Department { get; set; }
+
+        public Computer Computer { get; set; }
+
+
     }
 }

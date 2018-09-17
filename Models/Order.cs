@@ -5,7 +5,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BangazonAPI.Models
 {
-  public class Order
+    /* 
+     AUTHORED: Adam Wieckert, Seth Dana, Elliot Huck, Evan Lusky, Phil Patton
+
+     PURPOSE: Model to reflect the items on the Orders Table in the BangazonAPI DB
+    */
+    public class Order
   {
         [Key]
         public int Id { get; set; }

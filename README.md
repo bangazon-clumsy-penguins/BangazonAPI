@@ -64,18 +64,67 @@ Sample Training object:
 
 **GET**
 
-Usage:
+Usage: Returns Training objects from the database.
 
-/Trainings - returns an array of all Training objects, with all the employees registered for each training included as an array
+GET /Trainings
 
-/Trainings?completed=false returns an array of Trainings objects with "endDate" properties of the current day or later
+- Returns an array of all Training objects, with all the employees registered for each training included as an array of Employee objects on each Training object.
 
-/Trainings/{Id} returns a single Training object with the "id" property equal to the {Id} parameter that was passed.
+GET /Trainings/{Id}
+
+- Returns a single Training object with the "id" property equal to the {Id} parameter that was passed. Also, all the employees registered for that training are included as an array of Employee objects on the Training object.
+
+GET /Trainings?completed=false
+
+- Returns an array of Trainings objects with "endDate" properties of the current day or later.
+
 
 **POST**
 
+Usage: Adds new Training objects to the database.
 
+POST /Trainings
+
+- Returns a JSON-formatted object representing the training that was just posted.
+
+Training objects to be posted must be included in the body of the request and match the following JSON format:
+````JSON
+{
+	"Name": "Name of Training",
+	"StartDate": "YYYY-MM-DDT00:00:00",
+	"EndDate": "YYYY-MM-DDT00:00:00",
+	"MaxOccupancy": 42
+}
+````
+
+The MaxOccupancy property must be a positive integer. Otherwise, an exception will be thrown and the item will not be posted.
 
 **PUT**
 
+Usage: Edits Training objects in the database.
+
+PUT /Trainings/{Id}
+
+- Returns the HTTP status code "204 - No Content"
+
+Like the POST method, the Training object to be edited must be included in the body of the request and match the following JSON format:
+````JSON
+{
+	"Name": "Name of Training",
+	"StartDate": "YYYY-MM-DDT00:00:00",
+	"EndDate": "YYYY-MM-DDT00:00:00",
+	"MaxOccupancy": 42
+}
+````
+
+The MaxOccupancy property must be a positive integer. Otherwise, an exception will be thrown and the item will not be edited.
+
 **DELETE**
+
+Usage: Removes Training objects from the database.
+
+DELETE /Trainings/{Id}
+
+- Returns the HTTP status code "204 - No Content"
+
+The "StartDate" of the training to be deleted must be in the future. Otherwise, an exception will be thrown and the item will not be deleted

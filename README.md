@@ -39,11 +39,12 @@ If your database needs to be changed in any way, or you wish to add items to be 
 Now it's time to build the controllers that handle GET, POST, PUT, and DELETE operations on each resource. Make sure you read, and understand, the requirements in the issue tickets to you can use your ORM and SQL to return the correct data structure to client requests.
 
 ### 1. Customers Controller
+
 **GET**
 
 Endpoint: [localhost:5000/Customers](http://localhost:5000/Customers)
 
-Usage: 
+Usage:
 
 /Customers - return array of all customer objects
 
@@ -63,6 +64,7 @@ Must match Customer model. FirstName, LastName, JoinDate, and LastInteractionDat
     "lastInteractionDate": "2017-01-01T00:00:00"
 }
 ```
+
 **PUT**
 
 Usage: /Customers/{Id}
@@ -86,11 +88,12 @@ Usage: /Customers/{Id}
 Delete a customer matching the supplied Id
 
 ### 2. Products Controller
+
 **GET**
 
 Endpoint: [localhost:5000/Products](http://localhost:5000/Products)
 
-Usage: 
+Usage:
 
 /Products - return array of all customer objects
 
@@ -112,6 +115,7 @@ Must match Product model. Title, Description, Quantity, Price, ProductTypeId, an
     "customerId": 1
 }
 ```
+
 **PUT**
 
 Usage: /Products/{Id}
@@ -136,6 +140,7 @@ Must match Product model. Title, Description, Quantity, Price, ProductTypeId, an
 Usage: /Products/{Id}
 
 Delete a product matching the supplied Id
+
 
 ### 3. Orders Controller
 **GET**
@@ -173,11 +178,86 @@ Must match Order model. CustomerId and CustomerAccountId must be passed.
     "CustomerId": 3,
     "CustomerAccountId": 5
 }
+
+## 3. Product Types
+
+**GET**
+
+To get all product types, make a GET request to URL:
+
+```
+http://localhost:5000/ProductTypes
+```
+
+Returned will be an array of:
+
+```JSON
+[
+    {
+        "id": 1,
+        "label": "Balls"
+    }
+]
+```
+
+To get a single employee, add a /{id} to the GET request URL:
+
+```
+http://localhost:5000/ProductTypes/7
+```
+
+Returned will be a single Product Type:
+
+```JSON
+{
+    "id": 1,
+    "label": "Balls"
+}
+```
+
+**POST**
+
+To add a new product type, make a POST request to URL:
+
+```
+http://localhost:5000/ProductTypes
+```
+
+With a request body in the form:
+
+```JSON
+{
+    "label": "Balls"
+}
+```
+
+**PUT**
+
+To update a product type, make a PUT request to URL:
+
+```
+http://localhost:5000/ProductTypes/7
+```
+
+Where '7' is the Id of the product type to update,
+With a request body containing the updated information:
+
+```JSON
+{
+    "label": "UpdatedCategoryName"
+>>>>>>> master
+}
 ```
 
 **DELETE**
-
 Usage: /Orders/{Id}
 
 Delete an Order matching the supplied Id and the products on the order
 
+To delete a product type, make a DELETE request to URL:
+
+```
+http://localhost:5000/ProductTypes/7
+```
+
+Where '7' is the Id of the product type to delete

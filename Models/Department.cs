@@ -22,6 +22,5 @@ namespace BangazonAPI.Models
         public double Budget { get; set; }
 
         public List<Employee> EmployeeList { get; set; }
-
     }
 }

@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
+// Author: Evan Lusky
+// Exposes Departments to users, allows user to add employees to department query.
+
 namespace BangazonAPI.Controllers
 {
     [Route("[controller]")]
@@ -31,20 +34,9 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // GET: api/Departments
-        //[HttpGet]
-        //public async Task<IActionResult> Get()
-        //{
-        //    string sql = "SELECT * FROM Departments";
-
-        //    using (IDbConnection conn = Connection)
-        //    {
-        //        var departments = await conn.QueryAsync<Department>(sql);
-        //        return Ok(departments);
-        //    }
-        //}
-
         // GET: api/Departments/5
+        // id comes from url ---^
+        // Returns a single Department object
         [HttpGet("{id}", Name = "GetDepartment")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
@@ -58,8 +50,11 @@ namespace BangazonAPI.Controllers
         }
 
 
-
+        //   GET /Departments
         //   GET /Departments?_include=employees
+        //   _include comes from user defined value of _include in the query
+        //   If _include = employees then returns a list of departments each with a list of their employees
+        //   Else just returns a list of departments
         [HttpGet]
         public async Task<IActionResult> Get(string _include)
         {
@@ -77,7 +72,7 @@ namespace BangazonAPI.Controllers
                 {
                     Dictionary<int, Department> departmentEmployees = new Dictionary<int, Department>();
 
-                    var customersQuery = await conn.QueryAsync<Department, Employee, Department>(
+                    var departmentsQuery = await conn.QueryAsync<Department, Employee, Department>(
                         sql,
                         (department, employee) =>
                         {
@@ -94,7 +89,7 @@ namespace BangazonAPI.Controllers
                             return departmentEntry;
                         }); 
 
-                    return Ok(customersQuery.Distinct()); //.values?
+                    return Ok(departmentsQuery.Distinct()); //.values?
                     
                     
 
@@ -107,6 +102,8 @@ namespace BangazonAPI.Controllers
 
 
         // POST: api/Departments
+        // department comes from body of JSON
+        // Returns the object that was created
         public async Task<IActionResult> Post([FromBody] Department department)
         {
             string sql = $@"INSERT INTO Departments
@@ -124,6 +121,9 @@ namespace BangazonAPI.Controllers
 
         }
 
+
+        // Checks to see if a department exists
+        // id should be the id of the department 
         private bool DepartmentExists(int id)
         {
             string sql = $"SELECT Id, Name, Language FROM Departments WHERE Id = {id}";
@@ -134,6 +134,9 @@ namespace BangazonAPI.Controllers
         }
 
         // PUT api/values/5
+        // id comes from url of api call and determines which department will be replaced
+        // department comes from the body of the call
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromRoute] int id, [FromBody] Department department)
         {

@@ -249,13 +249,22 @@ Usage:
 **POST**
 
 Must match Order model. CustomerId and CustomerAccountId must be passed.
+Post will only function if the customer has no active orders (CustomerAccountId = null is an active order).
+If customer does have an active order a 400 status code (Bad Request) will be thrown.
 
 ```JSON
 {
     "CustomerId": 3,
-    "CustomerAccountId": 4
+    "CustomerAccountId": null
 }
 ```
+or 
+
+```JSON
+{
+    "CustomerId": 3
+}```
+
 **PUT**
 
 Usage: /Orders/{Id}

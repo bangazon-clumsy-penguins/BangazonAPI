@@ -160,9 +160,16 @@ namespace BangazonAPI.Controllers
 
             using (IDbConnection conn = Connection)
             {
-                var createdOrder = (await conn.QueryAsync<int>(sql)).Single();
-                order.Id = createdOrder;
-                return CreatedAtRoute("GetSingleOrder", new { id = createdOrder }, order);
+                if (ActiveOrders(order.CustomerId))
+                {
+                    var createdOrder = (await conn.QueryAsync<int>(sql)).Single();
+                    order.Id = createdOrder;
+                    return CreatedAtRoute("GetSingleOrder", new { id = createdOrder }, order);
+                } else
+                {
+                    return new StatusCodeResult(StatusCodes.Status400BadRequest);
+                }
+
             }
         }
 
@@ -220,6 +227,15 @@ namespace BangazonAPI.Controllers
             using (IDbConnection conn = Connection)
             {
                 return conn.Query<Order>(sql).Count() > 0;
+            }
+        }
+
+        private bool ActiveOrders(int id)
+        {
+            string sql = $"SELECT * FROM Orders o WHERE o.CustomerId = {id} AND o.CustomerAccountId IS NULL;";
+            using (IDbConnection conn = Connection)
+            {
+                return conn.Query<Order>(sql).Count() == 0;
             }
         }
     }

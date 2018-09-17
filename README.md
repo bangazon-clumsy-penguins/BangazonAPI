@@ -100,7 +100,7 @@ Training objects to be posted must be included in the body of the request and ma
 }
 ````
 
-The MaxOccupancy property must be a positive integer. Otherwise, an exception will be thrown and the item will not be posted.
+The MaxOccupancy property must be a positive integer and the EndDate property must not be before the StartDate. Otherwise, an exception will be thrown and the item will not be created.
 
 **PUT**
 
@@ -120,7 +120,7 @@ Like the POST method, the Training object to be edited must be included in the b
 }
 ````
 
-The MaxOccupancy property must be a positive integer. Otherwise, an exception will be thrown and the item will not be edited.
+The MaxOccupancy property must be a positive integer and the EndDate property must not be before the StartDate. Otherwise, an exception will be thrown and the item will not be edited.
 
 **DELETE**
 

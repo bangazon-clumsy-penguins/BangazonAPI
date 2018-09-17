@@ -256,18 +256,18 @@ Returned will be an array of:
 ]
 ```
 
-To get a single employee, add a /{id} to the GET request URL:
+To get a single product type, add a /{id} to the GET request URL:
 
 ```
-http://localhost:5000/ProductTypes/7
+http://localhost:5000/ProductTYpes/7
 ```
 
-Returned will be a single Product Type:
+Returned will be a single Product Type of:
 
 ```JSON
 {
-    "id": 1,
-    "label": "Balls"
+    "id": 7,
+    "label": "Shoes"
 }
 ```
 
@@ -282,9 +282,9 @@ http://localhost:5000/ProductTypes
 With a request body in the form:
 
 ```JSON
-{
-    "label": "Balls"
-}
+    {
+        "label": "Knives"
+    }
 ```
 
 **PUT**
@@ -313,3 +313,105 @@ http://localhost:5000/ProductTypes/7
 ```
 
 Where '7' is the Id of the product type to delete
+
+## 4. Employees
+
+**GET**
+
+To get all employees, make a GET request to URL:
+
+```
+http://localhost:5000/Employees
+```
+
+Returned will be an array of:
+
+```JSON
+[
+    {
+        "id": 1,
+        "firstName": "Tommy",
+        "lastName": "Smith",
+        "hireDate": "2015-05-01T00:00:00",
+        "isSupervisor": true,
+        "departmentId": 1,
+        "department": {
+            "id": 1,
+            "name": "Finance",
+            "budget": 4000
+        },
+        "computer": {
+            "id": 5,
+            "model": "PC",
+            "purchaseDate": "2018-01-05T00:00:00",
+            "decommisionDate": null
+        }
+    }
+]
+```
+
+To get a single employee, add a /{id} to the GET request URL:
+
+```
+http://localhost:5000/Employees/7
+```
+
+Returned will be a single Employee of:
+
+```JSON
+{
+    "id": 7,
+    "firstName": "John",
+    "lastName": "Williams",
+    "hireDate": "2015-05-01T00:00:00",
+    "isSupervisor": true,
+    "departmentId": 1,
+    "department": {
+        "id": 1,
+        "name": "Finance",
+        "budget": 4000
+    },
+    "computer": null
+}
+```
+
+**POST**
+
+To add an employee, make a POST request to URL:
+
+```
+http://localhost:5000/Employees
+```
+
+With a request body containing the employee information:
+
+```JSON
+    {
+        "firstName": "Sarah",
+        "lastName": "Blackmon",
+        "hireDate": "2015-05-01T00:00:00",
+        "isSupervisor": true,
+        "departmentId": 1
+    }
+```
+
+**PUT**
+
+To update an employees information, make a PUT request to URL:
+
+```
+http://localhost:5000/Employees/7
+```
+
+Where '7' is the Id of the employee to update,
+With a request body containing the updated information:
+
+```JSON
+    {
+        "firstName": "SarahUpdated",
+        "lastName": "BlackmonUpdated",
+        "hireDate": "2015-05-01T00:00:00",
+        "isSupervisor": true,
+        "departmentId": 1
+    }
+```

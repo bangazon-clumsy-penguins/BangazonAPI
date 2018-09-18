@@ -172,7 +172,7 @@ namespace BangazonAPI.Controllers
 
             //}
 
-            return await ActiveOrders(order);
+            return await OrdersHandler(order);
 
         }
 
@@ -243,46 +243,52 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        private async  Task<IActionResult> ActiveOrders(Order order)
+        private async  Task<IActionResult> OrdersHandler(Order order)
         {
-            string sql = $"SELECT * FROM Orders o WHERE o.CustomerId = {order.CustomerId} AND o.CustomerAccountId IS NULL;";
-            using (IDbConnection conn = Connection)
+            if (order.ProductId > 0)
             {
-                var orderToCheck = await conn.QueryAsync<Order>(sql);
-                if (orderToCheck.Count() == 0)
+                string sql = $"SELECT * FROM Orders o WHERE o.CustomerId = {order.CustomerId} AND o.CustomerAccountId IS NULL;";
+                using (IDbConnection conn = Connection)
                 {
-                    order.CustomerAccountId = null;
-                    string sql2 = $@"INSERT INTO Orders
+                    var orderToCheck = await conn.QueryAsync<Order>(sql);
+                    if (orderToCheck.Count() == 0)
+                    {
+                        order.CustomerAccountId = null;
+                        string sql2 = $@"INSERT INTO Orders
                                     (CustomerId)
                                     VALUES
                                     ('{order.CustomerId}');
                                     SELECT MAX(Id) FROM Orders;";
 
-                    var newOrderId = (await conn.QueryAsync<int>(sql2)).Single();
-                    order.Id = newOrderId;
+                        var newOrderId = (await conn.QueryAsync<int>(sql2)).Single();
+                        order.Id = newOrderId;
 
-                    string sql3 = $@"INSERT INTO OrderedProducts (OrderId, ProductId) VALUES ('{newOrderId}', '{order.ProductId}');";
+                        string sql3 = $@"INSERT INTO OrderedProducts (OrderId, ProductId) VALUES ('{newOrderId}', '{order.ProductId}');";
 
-                    var createOrderedProduct = await conn.QueryAsync<int>(sql3);
+                        var createOrderedProduct = await conn.QueryAsync<int>(sql3);
 
-                    return CreatedAtRoute("GetSingleOrder", new { id = newOrderId }, order);
-                }
-                else
-                {
-                    var orderToUpdate = orderToCheck.First(o => o.CustomerAccountId == null);
-
-                    string sql4 = $@"INSERT INTO OrderedProducts (OrderId, ProductId) VALUES ('{orderToUpdate.Id}', '{order.ProductId}'); SELECT MAX(Id) FROM OrderedProducts;";
-
-                    var addToOrderedProducts = (await conn.QueryAsync<int>(sql4)).Single();
-                    OrderedProduct orderedProduct = new OrderedProduct()
+                        return CreatedAtRoute("GetSingleOrder", new { id = newOrderId }, order);
+                    }
+                    else
                     {
-                        Id = addToOrderedProducts,
-                        OrderId = orderToUpdate.Id,
-                        ProductId = order.ProductId
-                    };
+                        var orderToUpdate = orderToCheck.First(o => o.CustomerAccountId == null);
 
-                    return CreatedAtRoute("GetSingleOrder", new { id = orderToUpdate.Id}, orderedProduct);
+                        string sql4 = $@"INSERT INTO OrderedProducts (OrderId, ProductId) VALUES ('{orderToUpdate.Id}', '{order.ProductId}'); SELECT MAX(Id) FROM OrderedProducts;";
+
+                        var addToOrderedProducts = (await conn.QueryAsync<int>(sql4)).Single();
+                        OrderedProduct orderedProduct = new OrderedProduct()
+                        {
+                            Id = addToOrderedProducts,
+                            OrderId = orderToUpdate.Id,
+                            ProductId = order.ProductId
+                        };
+
+                        return CreatedAtRoute("GetSingleOrder", new { id = orderToUpdate.Id }, orderedProduct);
+                    }
                 }
+            } else
+            {
+                return new StatusCodeResult(StatusCodes.Status400BadRequest);
             }
         }
 

@@ -135,8 +135,8 @@ namespace BangazonAPI.Controllers
 			"MaxOccupancy": 42
 		}
 
-		The MaxOccupancy property must be a positive integer. 
-		Otherwise, an exception will be thrown and the item will not be posted.
+		The MaxOccupancy property must be a positive integer and the EndDate property must not be before the StartDate.
+		Otherwise, an exception will be thrown and the item will not be created
 		*/
 		[HttpPost]
 		public async Task<IActionResult> Post([FromBody] Training training)
@@ -179,8 +179,8 @@ namespace BangazonAPI.Controllers
 			"MaxOccupancy": 42
 		}
 
-		The MaxOccupancy property must be a positive integer. 
-		Otherwise, an exception will be thrown and the item will not be edited.
+		The MaxOccupancy property must be a positive integer and the EndDate property must not be before the StartDate.
+		Otherwise, an exception will be thrown and the item will not be edited
 		*/
 		[HttpPut("{id}")]
 		public async Task<IActionResult> Put([FromRoute] int id, [FromBody] Training training)

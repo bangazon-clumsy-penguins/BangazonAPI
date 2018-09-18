@@ -25,6 +25,8 @@ namespace BangazonAPI.Models
 
 		public int MaxOccupancy { get; set; }
 
+        public int EmployeeId = 0;
+
 		public List<Employee> RegisteredEmployees = new List<Employee>();
     }
 }

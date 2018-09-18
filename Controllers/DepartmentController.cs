@@ -56,13 +56,19 @@ namespace BangazonAPI.Controllers
         //   If _include = employees then returns a list of departments each with a list of their employees
         //   Else just returns a list of departments
         [HttpGet]
-        public async Task<IActionResult> Get(string _include)
+        public async Task<IActionResult> Get(string _include, string _filter, string _gt)
         {
-            string sql = "Select * FROM Departments";
+            string sql = "Select * FROM Departments AS A";
 
             if (_include != null && _include.Contains("employees"))
             {
                 sql = "SELECT * FROM Departments AS A INNER JOIN Employees AS B ON A.Id = B.DepartmentId;";
+
+            }
+
+            if (_filter != null && _filter.Contains("budget"))
+            {
+                sql += $" WHERE A.budget > {_gt};";
 
             }
 
@@ -94,6 +100,7 @@ namespace BangazonAPI.Controllers
                     
 
                 }
+                Console.WriteLine($"SQL: {sql}");
                 var departments = await conn.QueryAsync<Department>(sql);
                 return Ok(departments);
 

@@ -187,12 +187,22 @@ namespace BangazonAPI.Controllers
 
             using (IDbConnection conn = Connection)
             {
-                int rows = await conn.ExecuteAsync(sql);
-                if (rows > 0)
+                if (CustomerAccountCheck(order))
                 {
-                    return new StatusCodeResult(StatusCodes.Status204NoContent);
+                    int rows = await conn.ExecuteAsync(sql);
+                    if (rows > 0)
+                    {
+                        return new StatusCodeResult(StatusCodes.Status204NoContent);
+                    } else
+                    {
+                        throw new Exception("No rows affected");
+                    }
+                } else
+                {
+                    throw new Exception("Customer Account not associated with customer on the order.");
                 }
-                throw new Exception("No rows affected");
+
+                
             }
         }
 

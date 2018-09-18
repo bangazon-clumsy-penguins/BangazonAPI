@@ -300,128 +300,136 @@ Where '7' is the Id of the product type to delete
 
 ### 6. Computers
 
-**GET**
+Endpoint: [localhost:5000/Computers](http://localhost:5000/Computers)
 
-To get all Computers, make a GET request to URL:
-```
-http://localhost:5000/Computers
-```
-Returned will be an array of:
-
-```JSON
-[
-    {
-        "model": "PC",
-        "purchaseDate": "2018-01-01T00:00:00",
-        "decommissionDate": null
-    }
-]
-```
-
-To get a single Computer, add a /{id} to the GET request URL:
-
-```
-http://localhost:5000/Computers/7
-```
-
-Returned will be a single Product Type of:
-
+Sample Computer object:
 ```JSON
 {
-        "id": 1,
-        "model": "PC",
-        "purchaseDate": "2018-01-01T00:00:00",
-        "decommissionDate": null
- }
+    "model": "PC",
+    "purchaseDate": "2018-01-01T00:00:00",
+    "decommissionDate": null
+}
 ```
+
+**GET**
+
+Usate: Returns Computer objects from the database.
+
+GET /Computers
+
+- Returns an array of all Computer objects in the database.
+
+GET /Computers/{id}
+
+- Returns a single Training object from the database with the "id" property equal to the {id} parameter that was passed. For example `/Computers/3` returns the computer with the id of 3.
 
 **POST**
 
-To add a new product type, make a POST request to URL:
+Usage: Adds new Computer objects to the database.
 
-```
-http://localhost:5000/Computers
-```
+POST /Computers
 
-With a request body in the form:
+- Returns a JSON-formatted object representing the computer that was just posted.
 
+Computer objects to be posted must be included in the body of the request and match the following JSON format:
 ```JSON
-    {
-        "model": "PC",
-        "purchaseDate": "2018-01-01T00:00:00",
-        "decommissionDate": null
-    }
+{
+    "Model": "Model Name",
+    "PurchaseDate": "YYYY-MM-DDT00:00:00",
+    "DecommissionDate": null
+}
 ```
 
 **PUT**
 
-To update a product type, make a PUT request to URL:
+Usage: Edits Computer objects in the database.
 
-```
-http://localhost:5000/Computers/7
-```
+PUT /Computers/{id}
 
-Where '7' is the Id of the product type to update,
-With a request body containing the updated information:
+- Returns the HTTP status code "204 - No Content"
 
+Like the POST method, the Computer object to be edited must be included in the body of the request and match the following JSON format:
 ```JSON
 {
-    {
-        
-        "model": "PC",
-        "purchaseDate": "2018-01-01T00:00:00",
-        "decommissionDate": null
-    }
+    "Model": "Model Name",
+    "PurchaseDate": "YYYY-MM-DDT00:00:00",
+    "DecommissionDate": null
 }
 ```
 
-To delete a Computer, make a DELETE request to URL:
+**DELETE**
 
-```
-http://localhost:5000/Computer/7
-```
+Usage: Removes Computer objects from the database.
 
-Where '7' is the Id of the Computer to delete
+DELETE /Computers/{id}
+
+- Returns the HTTP status code "204 - No Content"
 
 ### 7. Departments
 
-**GET**
-
 Endpoint: [localhost:5000/Departments](http://localhost:5000/Departments)
 
-Usage:
+Sample Department object:
+```JSON
+{
+	"id": 1,
+	"name": "Department Name",
+	"budget": 4000.00,
+	"employeeList": null
+}
+```
 
-/Departments - return array of all department objects
+**GET**
 
-/Customers?\_include=employees - returns all department objects with a list of employees
+Usage: Returns Department objects from the database.
 
-/Departments/{Id} returns a single object matching the Id
+GET /Departments 
+
+- Returns an array of all Department objects in the database.
+
+GET /Departments?\_include=employees 
+
+- Returns an array of all Department objects with all the employees for each department included as an array of Employee objects in the "employeeList" property of each Department object.
+
+GET /Departments/{id} 
+
+- Returns a single Department object from the database with the "id" property equal to the {id} parameter that was passed. For example `/Departments/5` returns the department with the id of 5.
 
 **POST**
 
-Must match Department model. Name, Budget.
+Usage: Adds new Department objects to the database.
 
+POST /Departments
+
+- Returns a JSON-formatted object representing the department that was just posted.
+
+Department objects to be posted must be included in the body of the request and match the following JSON format:
 ```JSON
 {
-    "Name": "Finance",
-    "Budget": 56000
+    "Name": "Name of Department",
+    "Budget": 5000.00
 }
 ```
+
+The Budget property should be a positive double.
 
 **PUT**
 
-Usage: /Departments/{Id}
+Usage: 
 
-Edit a customer matching the supplied Id
+/Departments/{id}
 
-Must match Department model. Name, Budget.
+- Returns the HTTP status code "204 - No Content"
 
+Like the POST method, the Department object to be edited must be included in the body of the request and match the following JSON format:
 ```JSON
 {
-    "Name": "Finance",
-    "Budget": 56000
+    "Name": "Name of Department",
+    "Budget": 5000.00
 }
 ```
+
+The Budget property should be a positive double.
 
 ### 8. Employees
 

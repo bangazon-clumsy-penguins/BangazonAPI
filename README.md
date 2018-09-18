@@ -40,48 +40,79 @@ Sample Customer object:
 Usage: Returns Customer objects from the database.
 
 GET /Customers
-- Returns an array of all customer objects in the database.
+- Returns an array of all Customer objects in the database.
 
-/Customers?(active=false, _include=products, _include=payments, _include=products,payments, q=SearchString) returns an array of objects matching the parameters. The "active" parameter overrides all other parameters except q.
+GET /Customers?_include=products
 
-/Customers/{Id} returns a single object matching the Id
+- Returns an array of all Customers in the database that have at least one Product associated with them. These products are included as an array of Product objects on the "customerProductList" property of each Customer. Basically, it shows all the customers who are currently selling products and what they are selling.
+
+GET /Customers?_include=payments
+
+- Returns an array of all Customers in the database that have completed at least one Order. The accounts that they used to pay for each of the orders are included as an array of CustomerAccount objects on the "customerAccountsList" property of each Customer. Basically, it shows all the customers who have purchased an order and which accounts they used to pay for their orders.
+
+GET /Customers?_include=products,payments
+
+- Returns an array of all Customer objects that are both: a.) selling at least one Product and b.) have paid for at least one order. It should include this information in the same manner as the individual 'products' and 'payments' queries listed above.
+
+GET /Customers?active=false
+
+- Returns an array of all Customers that have not placed any orders yet. This parameter overrides the `_include` queries, so it cannot be used in conjunction with them.
+
+For example, the query string `?_include=products&active=false` will not actually return a list of all the Customers who are selling products, but haven't placed any orders yet. It will only show the customers who have not placed any orders yet, as if the `_include=products` query had not been entered.
+
+GET /Customers?q={string}
+
+- Returns an array of all Customers that have a FirstName or LastName property that includes the {string} parameter. For example, `/customers?q=john` might return customers with the first name of 'John' or the last name of 'Johnson'.
+
+This query can be used in conjunction with all other queries to further narrow results. For example, `/customers?_include=products&q=es` will function as the `_include=products` query, except limited to customers with the string 'es' somewhere in their name.
+
+GET /Customers/{id} 
+
+- Returns a single Customer object from the database with the "id" property equal to the {id} parameter that was passed. For example `/Customers/2` returns the customer with the id of 2.
 
 **POST**
 
-Must match Customer model. FirstName, LastName, JoinDate, and LastInteractionDate must be passed.
+Usage: Adds new Customer objects to the database.
 
+POST /Customers
+
+- Returns a JSON-formatted object representing the customer that was just posted
+
+Customer objects to be posted must be included in the body of the request and match the following JSON format:
 ```JSON
 {
-    "firstName": "Tom",
-    "lastName": "Smith",
-    "joinDate": "2016-01-01T00:00:00",
-    "lastInteractionDate": "2017-01-01T00:00:00"
+    "FirstName": "First",
+    "LastName": "Last",
+    "JoinDate": "YYYY-MM-DDT00:00:00",
+    "LastInteractionDate": "YYYY-MM-DDT00:00:00"
 }
 ```
+
+The LastInteractionDate property should not be earlier than the JoinDate property.
 
 **PUT**
 
-Usage: /Customers/{Id}
+Usage: Edits a Customer object in the database.
 
-Edit a customer matching the supplied Id
+PUT /Customers/{id}
 
-Must match Customer model. FirstName, LastName, and LastInteractionDate are required params.
+- Returns the HTTP status code "204 - No Content"
 
-```
-JSON
+Like the POST method, the Customer object to be edited must be included in the body of the request and match the following JSON format:
+```JSON
 {
-    "firstName": "Tom",
-    "lastName": "Smith",
-    "lastInteractionDate": "2017-01-01T00:00:00"
+    "FirstName": "First",
+    "LastName": "Last",
+    "JoinDate": "YYYY-MM-DDT00:00:00",
+    "LastInteractionDate": "YYYY-MM-DDT00:00:00"
 }
 ```
 
+The LastInteractionDate property should not be earlier than the JoinDate property.
+
 **DELETE**
 
-Usage: /Customers/{Id}
-
-Delete a customer matching the supplied Id
-
+There is no DELETE method for the Customers resource.
 
 ### 2. Orders
 

@@ -20,13 +20,27 @@ Repo for first Bangazon sprint.
 
 ### 1. Customers
 
-**GET**
-
 Endpoint: [localhost:5000/Customers](http://localhost:5000/Customers)
 
-Usage:
+Sample Customer object:
+```JSON
+{
+    "id": 1,
+    "firstName": "Tom",
+    "lastName": "Smith",
+    "joinDate": "2016-01-01T00:00:00",
+    "lastInteractionDate": "2017-01-01T00:00:00",
+    "customerProductsList": null,
+    "customerAccountsList": null
+},
+```
 
-/Customers - return array of all customer objects
+**GET**
+
+Usage: Returns Customer objects from the database.
+
+GET /Customers
+- Returns an array of all customer objects in the database.
 
 /Customers?(active=false, _include=products, _include=payments, _include=products,payments, q=SearchString) returns an array of objects matching the parameters. The "active" parameter overrides all other parameters except q.
 
@@ -70,45 +84,113 @@ Delete a customer matching the supplied Id
 
 
 ### 2. Orders
-**GET**
 
 Endpoint: [localhost:5000/Orders](http://localhost:5000/Orders)
 
-Usage:
+Sample Order object:
+```JSON
+{
+    "products": [],
+    "id": 1,
+    "customerId": 1,
+    "customerAccountId": 1,
+    "customer": null
+}
+```
 
-/Orders - return array of all Order objects
+**GET**
 
-/Orders?(_include=products, _include=customer) returns an Order with the matching parameter inside the Order as a List(products) or Object(customer)
-/Orders?(completed=false, completed=true) returned only the incomplete or complete orders. Complete orders are those with a customerAccountId
-/Orders/{Id} returns a single object matching the Id
+Usage: Returns Order objects from the database.
+
+GET /Orders 
+
+- Returns an array of all Order objects in the database.
+
+GET /Orders?completed=true
+
+- Returns an array of all the order objects that are no longer "active", that is, they do not have a NULL CustomerAccountId. Using `completed=false` instead will return the array of orders that are still active.
+
+GET /Orders/{id}
+
+- Returns a single Order object from the database with the "id" property equal to the {id} parameter that was passed. For example `/Orders/5` returns the order with the id of 5.
+
+GET /Orders/{id}?_include=products
+
+- Returns the order corresponding to the {id} parameter and includes all the products on the order as an array of Product objects on the "products" property of the Order.
+
+Example: 
+```JSON
+{
+    "products": [
+        { Product1 },
+        { Product2 },
+        { ... }
+    ],
+    "id": 1,
+    "customerId": 1,
+    "customerAccountId": 1,
+    "customer": null
+}
+```
+
+GET /Orders/{id}?_include=customers
+
+- Returns the order corresponding to the {id} parameter and includes the customer who placed the order as a Customer object on the "customer" property of the Order.
+
+Example:
+```JSON
+{
+    "products": [],
+    "id": 1,
+    "customerId": 1,
+    "customerAccountId": 1,
+    "customer": {
+        "id": 3,
+        "firstName": "John",
+        "lastName": "Smith",
+        "joinDate": "2016-01-03T00:00:00",
+        "lastInteractionDate": "2018-01-02T00:00:00",
+        "customerProductsList": null,
+        "customerAccountsList": null
+    }
+}
+```
 
 **POST**
 
-Must match Order model. CustomerId and CustomerAccountId must be passed.
-Post will only function if the customer has no active orders (CustomerAccountId = null is an active order).
-If customer does have an active order a 400 status code (Bad Request) will be thrown.
+Usage: Adds new Order objects to the database.
 
+POST /Orders
+
+- Returns a JSON-formatted object representing the order that was just posted.
+
+Order objects to be posted must be included in the body of the request and match the following JSON format:
 ```JSON
 {
     "CustomerId": 3,
-    "CustomerAccountId": null
+    "CustomerAccountId": null,
 }
 ```
-or 
-
+or just 
 ```JSON
 {
     "CustomerId": 3
-}```
+}
+```
+
+The CustomerId property should be an integer corresponding to an existing customer. The CustomerAccountId property will be set to NULL by default when an order is first posted.
+
+The customer associated with the CustomerId on the order cannot have more than one "active" order (an order with a NULL CustomerAccountId property). If a new order is posted when a customer already has an active order, the new order will not be created and the HTTP status code "400 - Bad Request" will be returned.
 
 **PUT**
 
-Usage: /Orders/{Id}
+Usage: Edits Order objects in the database.
 
-Edit a Order matching the supplied Id
+PUT /Orders/{Id}
 
-Must match Order model. CustomerId and CustomerAccountId must be passed.
+- Returns the HTTP status code "204 - No Content"
 
+Like in the POST method, the Order object to be edited must be included in the body of the request and match the following JSON format:
 ```JSON
 {
     "CustomerId": 3,
@@ -116,11 +198,18 @@ Must match Order model. CustomerId and CustomerAccountId must be passed.
 }
 ```
 
+The CustomerAccountId property must be an integer and it must correspond
+to an account on the CustomerAccounts table that matches the CustomerId of the customer on the order. Basically, when you update an order with PUT, you have to include the customer's payment method (CustomerAccount) and it has to be one of their own payment methods, not someone else's.
+
 **DELETE**
-Usage: /Orders/{Id}
 
-Delete an Order matching the supplied Id and the products on the order
+Usage: Removes Order objects from the database.
 
+DELETE /Orders/{id}
+
+- Returns the HTTP status code "204 - No Content"
+
+This method also removes all entries on the OrderedProducts intersection table that correspond to the order being deleted.
 
 
 
@@ -128,38 +217,65 @@ Delete an Order matching the supplied Id and the products on the order
 
 
 ### 3. Payment Types
+Endpoint: [localhost:5000/PaymentTypes](http://localhost:5000/PaymentTypes)
+
+Sample PaymentTypes object:
+```JSON
+{
+    "id": 1,
+    "label": "Visa"
+}
+```
+
 **GET**
 
-Endpoint: [localhost:5000/paymentTypes](http://localhost:5000/paymentTypes)
+Usage: Returns PaymentType objects from the database.
 
-Usage:
+GET /PaymentTypes
 
-/paymentTypes - return array of all paymentTypes objects
+- Returns an array of all PaymentType objects in the database.
 
-/paymentTypes/{Id} returns a single object matching the Id
+GET /PaymentTypes/{id}
+
+- Returns a single PaymentType object from the database with the "id" property equal to the {id} parameter that was passed. For example `/PaymentTypes/5` returns the product type with the id of 5.
 
 **POST**
 
-Must match PaymentType model. Label must be passed.
+Usage: Adds new PaymentType objects to the database.
 
+POST /PaymentTypes
+
+- Returns a JSON-formatted object representing the payment type that was just posted.
+
+PaymentType objects to be posted must be included in the body of the request and match the following JSON format:
 ```JSON
 {
-    "Label": "Visa"
+	"Label": "Type of payment (e.g. 'Visa')",
 }
 ```
+
 **PUT**
 
-Usage: /PaymentTypes/{Id}
+Usage: Edits PaymentType objects in the database.
 
-Edit a PaymentType matching the supplied Id
+PUT /PaymentTypes/{id}
 
-Must match PaymentType model. Label must be passed.
+- Returns the HTTP status code "204 - No Content"
 
+Like the POST method, the PaymentType object to be edited must be included in the body of the request and match the following JSON format:
 ```JSON
 {
-    "CustomerId": "Master Card"
+	"Label": "Type of payment (e.g. 'Visa')",
 }
 ```
+
+**DELETE**
+
+Usage: Removes PaymentType objects from the database.
+
+DELETE /PaymentTypes/{id}
+
+- Returns the HTTP status code "204 - No Content"
 
 
 ### 4. Products
@@ -196,7 +312,7 @@ Usage: Adds new Product objects to the database.
 
 POST /Products
 
-- Returns a JSON-formatted object representing the product type that was just posted.
+- Returns a JSON-formatted object representing the product that was just posted.
 
 Product objects to be posted must be included in the body of the request and match the following JSON format:
 ```JSON
@@ -244,13 +360,13 @@ DELETE /Products/{id}
 
 ### 5. Product Types
 
-Endpoint: [localhost:5000/Products](http://localhost:5000/ProductTypes)
+Endpoint: [localhost:5000/ProductTypes](http://localhost:5000/ProductTypes)
 
 Sample ProductTypes object:
 ```JSON
 {
     "id": 1,
-    "label": "Category of product (e.g. 'Electronics')"
+    "label": "Electronics"
 }
 ```
 
@@ -277,7 +393,7 @@ POST /ProductTypes
 ProductType objects to be posted must be included in the body of the request and match the following JSON format:
 ```JSON
 {
-	"Label": "Category of product (e.g. 'Electronics')",
+	"Label": "Category of product",
 }
 ```
 
@@ -292,7 +408,7 @@ PUT /ProductTypes/{id}
 Like the POST method, the ProductType object to be edited must be included in the body of the request and match the following JSON format:
 ```JSON
 {
-	"Label": "Category of product (e.g. 'Electronics')",
+	"Label": "Category of product",
 }
 ```
 
@@ -383,7 +499,7 @@ Sample Department object:
 	"id": 1,
 	"name": "Department Name",
 	"budget": 4000.00,
-	"employeeList": null
+	"employeeList": []
 }
 ```
 
@@ -398,6 +514,20 @@ GET /Departments
 GET /Departments?\_include=employees 
 
 - Returns an array of all Department objects with all the employees for each department included as an array of Employee objects in the "employeeList" property of each Department object.
+
+Example:
+```JSON
+{
+	"id": 1,
+	"name": "Department Name",
+	"budget": 4000.00,
+	"employeeList": [
+        { Employee1 },
+        { Employee1 },
+        { ... }
+    ]
+}
+```
 
 GET /Departments/{id} 
 
@@ -529,9 +659,9 @@ Sample Training object:
 ```JSON
 {
 	"registeredEmployees": [
-		{Employee1},
-		{Employee2},
-		{...}
+		{ Employee1 },
+		{ Employee2 },
+		{ ... }
 	],
 	"id": 1,
 	"name": "Very Important Training",

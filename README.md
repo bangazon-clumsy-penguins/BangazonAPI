@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> master
 # Building the Bangazon Platform API
 
 Welcome, new Bangazonians!
@@ -100,7 +96,7 @@ Training objects to be posted must be included in the body of the request and ma
 }
 ````
 
-The MaxOccupancy property must be a positive integer. Otherwise, an exception will be thrown and the item will not be posted.
+The MaxOccupancy property must be a positive integer and the EndDate property must not be before the StartDate. Otherwise, an exception will be thrown and the item will not be created.
 
 **PUT**
 
@@ -120,7 +116,7 @@ Like the POST method, the Training object to be edited must be included in the b
 }
 ````
 
-The MaxOccupancy property must be a positive integer. Otherwise, an exception will be thrown and the item will not be edited.
+The MaxOccupancy property must be a positive integer and the EndDate property must not be before the StartDate. Otherwise, an exception will be thrown and the item will not be edited.
 
 **DELETE**
 
@@ -132,7 +128,7 @@ DELETE /Trainings/{Id}
 
 The "StartDate" of the training to be deleted must be in the future. Otherwise, an exception will be thrown and the item will not be deleted
 
-### 1. Customers Controller
+### 2. Customers Controller
 
 **GET**
 
@@ -142,7 +138,7 @@ Usage:
 
 /Customers - return array of all customer objects
 
-/Customers?(\_include=products, \_include=payments, \_include=products,payments, q=SearchString) returns an array of objects matching the parameters
+/Customers?(active=false, _include=products, _include=payments, _include=products,payments, q=SearchString) returns an array of objects matching the parameters. The "active" parameter overrides all other parameters except q.
 
 /Customers/{Id} returns a single object matching the Id
 
@@ -167,7 +163,8 @@ Edit a customer matching the supplied Id
 
 Must match Customer model. FirstName, LastName, and LastInteractionDate are required params.
 
-```JSON
+```
+JSON
 {
     "firstName": "Tom",
     "lastName": "Smith",
@@ -235,16 +232,68 @@ Usage: /Products/{Id}
 
 Delete a product matching the supplied Id
 
-## 3. Product Types
+
+### 3. Orders Controller
+**GET**
+
+Endpoint: [localhost:5000/Orders](http://localhost:5000/Orders)
+
+Usage:
+
+/Orders - return array of all Order objects
+
+/Orders?(_include=products, _include=customer) returns an Order with the matching parameter inside the Order as a List(products) or Object(customer)
+/Orders?(completed=false, completed=true) returned only the incomplete or complete orders. Complete orders are those with a customerAccountId
+/Orders/{Id} returns a single object matching the Id
+
+**POST**
+
+Must match Order model. CustomerId and CustomerAccountId must be passed.
+Post will only function if the customer has no active orders (CustomerAccountId = null is an active order).
+If customer does have an active order a 400 status code (Bad Request) will be thrown.
+
+```JSON
+{
+    "CustomerId": 3,
+    "CustomerAccountId": null
+}
+```
+or 
+
+```JSON
+{
+    "CustomerId": 3
+}```
+
+**PUT**
+
+Usage: /Orders/{Id}
+
+Edit a Order matching the supplied Id
+
+Must match Order model. CustomerId and CustomerAccountId must be passed.
+
+```JSON
+{
+    "CustomerId": 3,
+    "CustomerAccountId": 5
+}
+```
+
+**DELETE**
+Usage: /Orders/{Id}
+
+Delete an Order matching the supplied Id and the products on the order
+
+
+## 4. Product Types
 
 **GET**
 
 To get all product types, make a GET request to URL:
-
 ```
 http://localhost:5000/ProductTypes
 ```
-
 Returned will be an array of:
 
 ```JSON
@@ -304,8 +353,6 @@ With a request body containing the updated information:
 }
 ```
 
-**DELETE**
-
 To delete a product type, make a DELETE request to URL:
 
 ```
@@ -314,7 +361,7 @@ http://localhost:5000/ProductTypes/7
 
 Where '7' is the Id of the product type to delete
 
-## 4. Employees
+## 5. Employees
 
 **GET**
 
@@ -415,3 +462,78 @@ With a request body containing the updated information:
         "departmentId": 1
     }
 ```
+
+### 6. PaymentTypes Controller
+**GET**
+
+Endpoint: [localhost:5000/paymentTypes](http://localhost:5000/paymentTypes)
+
+Usage:
+
+/paymentTypes - return array of all paymentTypes objects
+
+/paymentTypes/{Id} returns a single object matching the Id
+
+**POST**
+
+Must match PaymentType model. Label must be passed.
+
+```JSON
+{
+    "Label": "Visa"
+}
+```
+**PUT**
+
+Usage: /PaymentTypes/{Id}
+
+Edit a PaymentType matching the supplied Id
+
+Must match PaymentType model. Label must be passed.
+
+```JSON
+{
+    "CustomerId": "Master Card"
+}
+```
+
+### 7. Departments Controller
+
+**GET**
+
+Endpoint: [localhost:5000/Departments](http://localhost:5000/Departments)
+
+Usage:
+
+/Departments - return array of all department objects
+
+/Customers?\_include=employees - returns all department objects with a list of employees
+
+/Departments/{Id} returns a single object matching the Id
+
+**POST**
+
+Must match Department model. Name, Budget.
+
+```JSON
+{
+    "Name": "Finance",
+    "Budget": 56000
+}
+```
+
+**PUT**
+
+Usage: /Departments/{Id}
+
+Edit a customer matching the supplied Id
+
+Must match Department model. Name, Budget.
+
+```JSON
+{
+    "Name": "Finance",
+    "Budget": 56000
+}
+```
+

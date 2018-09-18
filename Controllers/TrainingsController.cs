@@ -143,7 +143,12 @@ namespace BangazonAPI.Controllers
 		{
 			if (training.MaxOccupancy <= 0)
 			{
-				throw new Exception("The property 'MaxOccupancy' must be greater than 0; cannot create a training with zero or negative occupants");
+				throw new Exception("The property 'MaxOccupancy' must be greater than 0; a training cannot have zero or negative occupants");
+			}
+
+			if(training.EndDate < training.StartDate)
+			{
+				throw new Exception("The property 'EndDate' must be greater than 'StartDate'; a training cannot end before it has started");
 			}
 
 			string sql = $@"
@@ -182,7 +187,12 @@ namespace BangazonAPI.Controllers
 		{
 			if (training.MaxOccupancy <= 0)
 			{
-				throw new Exception("The property 'MaxOccupancy' must be greater than 0; cannot create a training with zero or negative occupants");
+				throw new Exception("The property 'MaxOccupancy' must be greater than 0; a training cannot have zero or negative occupants");
+			}
+
+			if (training.EndDate < training.StartDate)
+			{
+				throw new Exception("The property 'EndDate' must be greater than 'StartDate'; a training cannot end before it has started");
 			}
 
 			string sql = $@"

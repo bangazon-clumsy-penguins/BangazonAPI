@@ -48,14 +48,14 @@ namespace BangazonAPI.Models
         }
 
         /*
-            GET /Customers?q=test
-            GET /Customers?_include=payments
-            GET /Customers?_include=products
-            GET /Customers?_include=products,payments
-            q is for a string query of customers first or last name, _include joins payments or products, or both onto customer. 
+            GET /Customers/active=false Queries for customers who don't have an active order (This param overrides all others except q)
+            GET /Customers?q={FirstName} || {LastName} String query of customers first or last name. 
+            GET /Customers?_include=payments Includes the customers payment options
+            GET /Customers?_include=products Includes the customers products
+            GET /Customers?_include=products,payments Includes both the payment options and products
          */
         [HttpGet]
-        public async Task<IActionResult> Get(string q, string _include)
+        public async Task<IActionResult> Get(string q, string _include, string active)
         {
             string sql = "SELECT * FROM Customers";
             if (_include == null) { _include = ""; }
@@ -71,8 +71,14 @@ namespace BangazonAPI.Models
                         JOIN CustomerAccounts ON Orders.CustomerAccountId = CustomerAccounts.Id
                         JOIN PaymentTypes ON PaymentTypes.Id = CustomerAccounts.PaymentTypeId";
             }
+            if (active != null && active == "false")
+            {
+                sql = $@"SELECT * FROM Customers LEFT JOIN Orders ON Orders.CustomerId = Customers.Id
+                        WHERE Orders.CustomerAccountId IS NULL";
+            }
 
-            if (q != null || _include != null)
+
+            if ((q != null || _include != null) && active != "false")
             {
                 sql += " WHERE 1=1";
             }
@@ -86,6 +92,12 @@ namespace BangazonAPI.Models
 
             using (IDbConnection conn = Connection)
             {
+                if (active != null && active == "false")
+                {
+                    var customersQuery = await conn.QueryAsync<Customer>(sql);
+                    return Ok(customersQuery);
+                }
+
                 if (_include.Contains("payments") && _include.Contains("products"))
                 {
                     Dictionary<int, Customer> customerData = new Dictionary<int, Customer>();
@@ -261,7 +273,7 @@ namespace BangazonAPI.Models
          * 
          **/
 
-        // DELETE /customers/5
+        //DELETE /customers/5
         //[HttpDelete("{id}")]
         //public async Task<IActionResult> Delete(int id)
         //{

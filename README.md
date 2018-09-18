@@ -127,7 +127,7 @@ Delete an Order matching the supplied Id and the products on the order
 
 
 
-### 6. Payment Types
+### 3. Payment Types
 **GET**
 
 Endpoint: [localhost:5000/paymentTypes](http://localhost:5000/paymentTypes)
@@ -162,139 +162,147 @@ Must match PaymentType model. Label must be passed.
 ```
 
 
-### 2. Products
-
-**GET**
-
+### 4. Products
 Endpoint: [localhost:5000/Products](http://localhost:5000/Products)
 
-Usage:
-
-/Products - return array of all customer objects
-
-returns an array of objects
-
-/Products/{Id} returns a single object matching the Id
-
-**POST**
-
-Must match Product model. Title, Description, Quantity, Price, ProductTypeId, and CustomerId are required params.
-
+Sample Product object:
 ```JSON
 {
+    "id": 1,
     "title": "Football",
     "description": "Sick Football",
     "quantity": 7,
-    "price": 47.5,
+    "price": 47.50,
     "productTypeId": 1,
     "customerId": 1
+},
+```
+
+**GET**
+
+Usage: Returns Product objects from the database.
+
+GET /Products
+
+- Returns an array of all Product objects in the database.
+
+GET /Products/{id}
+
+- Returns a single Product object from the database with the "id" property equal to the {id} parameter that was passed. For example `/Products/5` returns the product type with the id of 5.
+
+**POST**
+
+Usage: Adds new Product objects to the database.
+
+POST /Products
+
+- Returns a JSON-formatted object representing the product type that was just posted.
+
+Product objects to be posted must be included in the body of the request and match the following JSON format:
+```JSON
+{
+    "Title": "Name of Product",
+    "Description": "Description of Product",
+    "Quantity": 7,
+    "Price": 47.50,
+    "ProductTypeId": 1,
+    "CustomerId": 1
+}
+```
+
+The ProductTypeId property and the CustomerId property should both be integers corresponding to an existing ProductType/Customer resource.
+
+**PUT**
+
+Usage: Edits Product objects in the database.
+
+PUT /Products/{id}
+
+- Returns the HTTP status code "204 - No Content"
+
+Like the POST method, the Product object to be edited must be included in the body of the request and match the following JSON format:
+```JSON
+{
+    "Title": "Name of Product",
+    "Description": "Description of Product",
+    "Quantity": 7,
+    "Price": 47.50,
+    "ProductTypeId": 1,
+    "CustomerId": 1
+}
+```
+
+The ProductTypeId property and the CustomerId property should both be integers corresponding to an existing ProductType/Customer resource.
+
+**DELETE**
+
+Usage: Removes Product objects from the database.
+
+DELETE /Products/{id}
+
+- Returns the HTTP status code "204 - No Content"
+
+### 5. Product Types
+
+Endpoint: [localhost:5000/Products](http://localhost:5000/ProductTypes)
+
+Sample ProductTypes object:
+```JSON
+{
+    "id": 1,
+    "label": "Category of product (e.g. 'Electronics')"
+}
+```
+
+**GET**
+
+Usage: Returns ProductType objects from the database.
+
+GET /ProductTypes
+
+- Returns an array of all ProductType objects in the database.
+
+GET /ProductTypes/{id}
+
+- Returns a single ProductType object from the database with the "id" property equal to the {id} parameter that was passed. For example `/ProductTypes/5` returns the product type with the id of 5.
+
+**POST**
+
+Usage: Adds new ProductType objects to the database.
+
+POST /ProductTypes
+
+- Returns a JSON-formatted object representing the product type that was just posted.
+
+ProductType objects to be posted must be included in the body of the request and match the following JSON format:
+```JSON
+{
+	"Label": "Category of product (e.g. 'Electronics')",
 }
 ```
 
 **PUT**
 
-Usage: /Products/{Id}
+Usage: Edits ProductType objects in the database.
 
-Edit a product matching the supplied Id
+PUT /ProductTypes/{id}
 
-Must match Product model. Title, Description, Quantity, Price, ProductTypeId, and CustomerId are required params.
+- Returns the HTTP status code "204 - No Content"
 
+Like the POST method, the ProductType object to be edited must be included in the body of the request and match the following JSON format:
 ```JSON
 {
-    "title": "Football",
-    "description": "Sick Football",
-    "quantity": 7,
-    "price": 47.5,
-    "productTypeId": 1,
-    "customerId": 1
+	"Label": "Category of product (e.g. 'Electronics')",
 }
 ```
 
 **DELETE**
 
-Usage: /Products/{Id}
+Usage: Removes ProductType objects from the database.
 
-Delete a product matching the supplied Id
+DELETE /ProductTypes/{id}
 
-
-
-
-### 4. Product Types
-
-**GET**
-
-To get all product types, make a GET request to URL:
-```
-http://localhost:5000/ProductTypes
-```
-Returned will be an array of:
-
-```JSON
-[
-    {
-        "id": 1,
-        "label": "Balls"
-    }
-]
-```
-
-To get a single product type, add a /{id} to the GET request URL:
-
-```
-http://localhost:5000/ProductTYpes/7
-```
-
-Returned will be a single Product Type of:
-
-```JSON
-{
-    "id": 7,
-    "label": "Shoes"
-}
-```
-
-**POST**
-
-To add a new product type, make a POST request to URL:
-
-```
-http://localhost:5000/ProductTypes
-```
-
-With a request body in the form:
-
-```JSON
-    {
-        "label": "Knives"
-    }
-```
-
-**PUT**
-
-To update a product type, make a PUT request to URL:
-
-```
-http://localhost:5000/ProductTypes/7
-```
-
-Where '7' is the Id of the product type to update,
-With a request body containing the updated information:
-
-```JSON
-{
-    "label": "UpdatedCategoryName"
-}
-```
-
-To delete a product type, make a DELETE request to URL:
-
-```
-http://localhost:5000/ProductTypes/7
-```
-
-Where '7' is the Id of the product type to delete
-
-
+- Returns the HTTP status code "204 - No Content"
 
 ## Corporate Resource Controllers
 

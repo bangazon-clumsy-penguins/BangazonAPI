@@ -151,29 +151,7 @@ namespace BangazonAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Order order)
         {
-            //order.CustomerAccountId = null;
-            //string sql = $@"INSERT INTO Orders
-            //(CustomerId)
-            //VALUES
-            //('{order.CustomerId}');
-            //SELECT MAX(Id) FROM Orders;";
-
-            //using (IDbConnection conn = Connection)
-            //{
-            //    if (ActiveOrders(order.CustomerId, order))
-            //    {
-            //        var createdOrder = (await conn.QueryAsync<int>(sql)).Single();
-            //        order.Id = createdOrder;
-            //        return CreatedAtRoute("GetSingleOrder", new { id = createdOrder }, order);
-            //    } else
-            //    {
-            //        return new StatusCodeResult(StatusCodes.Status400BadRequest);
-            //    }
-
-            //}
-
             return await OrdersHandler(order);
-
         }
 
         // PUT: /Orders/5

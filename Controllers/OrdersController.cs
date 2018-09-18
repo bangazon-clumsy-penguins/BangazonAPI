@@ -151,26 +151,29 @@ namespace BangazonAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Order order)
         {
-            order.CustomerAccountId = null;
-            string sql = $@"INSERT INTO Orders
-            (CustomerId)
-            VALUES
-            ('{order.CustomerId}');
-            select MAX(Id) from Orders;";
+            //order.CustomerAccountId = null;
+            //string sql = $@"INSERT INTO Orders
+            //(CustomerId)
+            //VALUES
+            //('{order.CustomerId}');
+            //SELECT MAX(Id) FROM Orders;";
 
-            using (IDbConnection conn = Connection)
-            {
-                if (ActiveOrders(order.CustomerId))
-                {
-                    var createdOrder = (await conn.QueryAsync<int>(sql)).Single();
-                    order.Id = createdOrder;
-                    return CreatedAtRoute("GetSingleOrder", new { id = createdOrder }, order);
-                } else
-                {
-                    return new StatusCodeResult(StatusCodes.Status400BadRequest);
-                }
+            //using (IDbConnection conn = Connection)
+            //{
+            //    if (ActiveOrders(order.CustomerId, order))
+            //    {
+            //        var createdOrder = (await conn.QueryAsync<int>(sql)).Single();
+            //        order.Id = createdOrder;
+            //        return CreatedAtRoute("GetSingleOrder", new { id = createdOrder }, order);
+            //    } else
+            //    {
+            //        return new StatusCodeResult(StatusCodes.Status400BadRequest);
+            //    }
 
-            }
+            //}
+
+            return await ActiveOrders(order);
+
         }
 
         // PUT: /Orders/5
@@ -240,12 +243,46 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        private bool ActiveOrders(int id)
+        private async  Task<IActionResult> ActiveOrders(Order order)
         {
-            string sql = $"SELECT * FROM Orders o WHERE o.CustomerId = {id} AND o.CustomerAccountId IS NULL;";
+            string sql = $"SELECT * FROM Orders o WHERE o.CustomerId = {order.CustomerId} AND o.CustomerAccountId IS NULL;";
             using (IDbConnection conn = Connection)
             {
-                return conn.Query<Order>(sql).Count() == 0;
+                var orderToCheck = await conn.QueryAsync<Order>(sql);
+                if (orderToCheck.Count() == 0)
+                {
+                    order.CustomerAccountId = null;
+                    string sql2 = $@"INSERT INTO Orders
+                                    (CustomerId)
+                                    VALUES
+                                    ('{order.CustomerId}');
+                                    SELECT MAX(Id) FROM Orders;";
+
+                    var newOrderId = (await conn.QueryAsync<int>(sql2)).Single();
+                    order.Id = newOrderId;
+
+                    string sql3 = $@"INSERT INTO OrderedProducts (OrderId, ProductId) VALUES ('{newOrderId}', '{order.ProductId}');";
+
+                    var createOrderedProduct = await conn.QueryAsync<int>(sql3);
+
+                    return CreatedAtRoute("GetSingleOrder", new { id = newOrderId }, order);
+                }
+                else
+                {
+                    var orderToUpdate = orderToCheck.First(o => o.CustomerAccountId == null);
+
+                    string sql4 = $@"INSERT INTO OrderedProducts (OrderId, ProductId) VALUES ('{orderToUpdate.Id}', '{order.ProductId}'); SELECT MAX(Id) FROM OrderedProducts;";
+
+                    var addToOrderedProducts = (await conn.QueryAsync<int>(sql4)).Single();
+                    OrderedProduct orderedProduct = new OrderedProduct()
+                    {
+                        Id = addToOrderedProducts,
+                        OrderId = orderToUpdate.Id,
+                        ProductId = order.ProductId
+                    };
+
+                    return CreatedAtRoute("GetSingleOrder", new { id = orderToUpdate.Id}, orderedProduct);
+                }
             }
         }
 

@@ -151,26 +151,7 @@ namespace BangazonAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Order order)
         {
-            order.CustomerAccountId = null;
-            string sql = $@"INSERT INTO Orders
-            (CustomerId)
-            VALUES
-            ('{order.CustomerId}');
-            select MAX(Id) from Orders;";
-
-            using (IDbConnection conn = Connection)
-            {
-                if (ActiveOrders(order.CustomerId))
-                {
-                    var createdOrder = (await conn.QueryAsync<int>(sql)).Single();
-                    order.Id = createdOrder;
-                    return CreatedAtRoute("GetSingleOrder", new { id = createdOrder }, order);
-                } else
-                {
-                    return new StatusCodeResult(StatusCodes.Status400BadRequest);
-                }
-
-            }
+            return await OrdersHandler(order);
         }
 
         // PUT: /Orders/5
@@ -187,12 +168,22 @@ namespace BangazonAPI.Controllers
 
             using (IDbConnection conn = Connection)
             {
-                int rows = await conn.ExecuteAsync(sql);
-                if (rows > 0)
+                if (CustomerAccountCheck(order))
                 {
-                    return new StatusCodeResult(StatusCodes.Status204NoContent);
+                    int rows = await conn.ExecuteAsync(sql);
+                    if (rows > 0)
+                    {
+                        return new StatusCodeResult(StatusCodes.Status204NoContent);
+                    } else
+                    {
+                        throw new Exception("No rows affected");
+                    }
+                } else
+                {
+                    throw new Exception("Customer Account not associated with customer on the order.");
                 }
-                throw new Exception("No rows affected");
+
+                
             }
         }
 
@@ -230,12 +221,63 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        private bool ActiveOrders(int id)
+        private async  Task<IActionResult> OrdersHandler(Order order)
         {
-            string sql = $"SELECT * FROM Orders o WHERE o.CustomerId = {id} AND o.CustomerAccountId IS NULL;";
+            if (order.ProductId > 0)
+            {
+                string sql = $"SELECT * FROM Orders o WHERE o.CustomerId = {order.CustomerId} AND o.CustomerAccountId IS NULL;";
+                using (IDbConnection conn = Connection)
+                {
+                    var orderToCheck = await conn.QueryAsync<Order>(sql);
+                    if (orderToCheck.Count() == 0)
+                    {
+                        order.CustomerAccountId = null;
+                        string sql2 = $@"INSERT INTO Orders
+                                    (CustomerId)
+                                    VALUES
+                                    ('{order.CustomerId}');
+                                    SELECT MAX(Id) FROM Orders;";
+
+                        var newOrderId = (await conn.QueryAsync<int>(sql2)).Single();
+                        order.Id = newOrderId;
+
+                        string sql3 = $@"INSERT INTO OrderedProducts (OrderId, ProductId) VALUES ('{newOrderId}', '{order.ProductId}');";
+
+                        var createOrderedProduct = await conn.QueryAsync<int>(sql3);
+
+                        return CreatedAtRoute("GetSingleOrder", new { id = newOrderId }, order);
+                    }
+                    else
+                    {
+                        var orderToUpdate = orderToCheck.First(o => o.CustomerAccountId == null);
+
+                        string sql4 = $@"INSERT INTO OrderedProducts (OrderId, ProductId) VALUES ('{orderToUpdate.Id}', '{order.ProductId}'); SELECT MAX(Id) FROM OrderedProducts;";
+
+                        var addToOrderedProducts = (await conn.QueryAsync<int>(sql4)).Single();
+                        OrderedProduct orderedProduct = new OrderedProduct()
+                        {
+                            Id = addToOrderedProducts,
+                            OrderId = orderToUpdate.Id,
+                            ProductId = order.ProductId
+                        };
+
+                        return CreatedAtRoute("GetSingleOrder", new { id = orderToUpdate.Id }, orderedProduct);
+                    }
+                }
+            } else
+            {
+                return new StatusCodeResult(StatusCodes.Status400BadRequest);
+            }
+        }
+
+        private bool CustomerAccountCheck(Order order)
+        {
+            string sql = $@"SELECT *
+                            FROM CustomerAccounts ca
+                            WHERE ca.Id = {order.CustomerAccountId} AND {order.CustomerId} = ca.CustomerId;";
             using (IDbConnection conn = Connection)
             {
-                return conn.Query<Order>(sql).Count() == 0;
+                return conn.Query<CustomerAccount>(sql).Count() > 0;
             }
         }
     }
